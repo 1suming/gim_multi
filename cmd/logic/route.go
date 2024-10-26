@@ -91,11 +91,12 @@ func GetToken(ctx *gin.Context) {
 	resp, err := device.Service.GetToken(ctx, req.PhoneNumber, req.Code, req.DeviceId, req.OperateType, req.Pwd)
 	if err != nil {
 		logger.Logger.Info("GetToken err", zap.Error(err))
-		if err == gerrors.ErrUserExisted {
+		//我们在调用errors.New("")来返回一个错误时， 可以通过比较指针，来比较error是否相等， 实际上就是控制相同的错误我们只创建一个error对象。否则对象复制一下，在比较就是false了。
+		if gerrors.ErrUserExisted.Error() == err.Error() {
 			ctx.JSON(200, response.Errno(errs.ErrUserExisted))
 			return
 		}
-		if err == gerrors.ErrUserNotFound || err == gerrors.ErrPasswordError {
+		if err.Error() == gerrors.ErrUserNotFound.Error() || err.Error() == gerrors.ErrPasswordError.Error() {
 			ctx.JSON(200, response.Errno(errs.ErrAccountOrPasswordIncorrect))
 			return
 		}

@@ -43,6 +43,7 @@ func (*authService) SignIn(ctx context.Context, phoneNumber, code string, device
 		}
 
 		if user == nil {
+			logger.Logger.Info("SignIn", zap.Any("phoneNumber", phoneNumber))
 			user = &model.User{
 				PhoneNumber: phoneNumber,
 				CreateTime:  time.Now(),
