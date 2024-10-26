@@ -74,6 +74,7 @@ var (
 	ErrTokenInvalid = &Errno{Code: 20202, Message: "jwt 是无效的"}
 
 	// 用户错误, 前缀为 203
-	ErrUserNotFound      = &Errno{Code: 20301, Message: "用户没找到"}
-	ErrPasswordIncorrect = &Errno{Code: 20302, Message: "密码错误"}
+	ErrUserNotFound               = &Errno{Code: 20301, Message: "用户没找到"}
+	ErrAccountOrPasswordIncorrect = &Errno{Code: 20302, Message: "用户名或密码错误"}
+	ErrUserExisted                = &Errno{Code: 20302, Message: "用户已存在"}
 )
