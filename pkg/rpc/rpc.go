@@ -10,6 +10,8 @@ var (
 	connectIntClient  pb.ConnectIntClient
 	logicIntClient    pb.LogicIntClient
 	businessIntClient pb.BusinessIntClient
+
+	businessExtClient pb.BusinessExtClient //@ms
 )
 
 func GetConnectIntClient() pb.ConnectIntClient {
@@ -31,6 +33,12 @@ func GetBusinessIntClient() pb.BusinessIntClient {
 		businessIntClient = config.Config.BusinessIntClientBuilder()
 	}
 	return businessIntClient
+}
+func GetBusinessExtClient() pb.BusinessExtClient {
+	if businessExtClient == nil {
+		businessExtClient = config.Config.BusinessExtClientBuilder()
+	}
+	return businessExtClient
 }
 
 func GetSender(deviceID, userID int64) (*pb.Sender, error) {

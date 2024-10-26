@@ -2,6 +2,7 @@ package device
 
 import (
 	"context"
+	"fmt"
 	"gim/pkg/logger"
 	"gim/pkg/protocol/pb"
 	"gim/pkg/rpc"
@@ -22,6 +23,21 @@ func (*service) Register(ctx context.Context, device *Device) error {
 	}
 
 	return nil
+}
+
+// @ms 获取token
+func (*service) GetToken(ctx context.Context, phoneNumber string, code string, DeviceId int64) (*pb.SignInResp, error) {
+
+	resp, err := rpc.GetBusinessExtClient().SignIn(ctx, &pb.SignInReq{
+		PhoneNumber: phoneNumber,
+		Code:        code,
+		DeviceId:    DeviceId,
+	})
+	if err != nil {
+		fmt.Println(err)
+	}
+	return resp, err
+
 }
 
 // SignIn 长连接登录

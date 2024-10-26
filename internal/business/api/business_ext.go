@@ -14,7 +14,7 @@ type BusinessExtServer struct {
 }
 
 func (s *BusinessExtServer) SignIn(ctx context.Context, req *pb.SignInReq) (*pb.SignInResp, error) {
-	isNew, userId, token, err := app2.AuthApp.SignIn(ctx, req.PhoneNumber, req.Code, req.DeviceId)
+	isNew, userId, token, err := app2.AuthApp.SignIn(ctx, req.PhoneNumber, req.Code, req.DeviceId, req.OperateType, req.Pwd)
 	if err != nil {
 		return nil, err
 	}

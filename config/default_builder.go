@@ -20,9 +20,9 @@ func (*defaultBuilder) Build() Configuration {
 	logger.Target = logger.Console
 
 	return Configuration{
-		MySQL:                "root:gim123456@tcp(111.229.238.28:3306)/gim?charset=utf8&parseTime=true",
-		RedisHost:            "111.229.238.28:6379",
-		RedisPassword:        "alber123456",
+		MySQL:                "root:123456@tcp(192.168.31.101:3307)/im?charset=utf8&parseTime=true",
+		RedisHost:            "192.168.31.101:6379",
+		RedisPassword:        "123456",
 		PushRoomSubscribeNum: 100,
 		PushAllSubscribeNum:  100,
 
@@ -44,7 +44,8 @@ func (*defaultBuilder) Build() Configuration {
 			return pb.NewConnectIntClient(conn)
 		},
 		LogicIntClientBuilder: func() pb.LogicIntClient {
-			conn, err := grpc.DialContext(context.TODO(), "addrs:///docker.for.mac.host.internal:8010", grpc.WithInsecure(), grpc.WithUnaryInterceptor(interceptor),
+			//addrs:///docker.for.mac.host.internal:8010
+			conn, err := grpc.DialContext(context.TODO(), "addrs:///127.0.0.1:8010", grpc.WithInsecure(), grpc.WithUnaryInterceptor(interceptor),
 				grpc.WithDefaultServiceConfig(fmt.Sprintf(`{"LoadBalancingPolicy": "%s"}`, roundrobin.Name)))
 			if err != nil {
 				panic(err)
@@ -58,6 +59,14 @@ func (*defaultBuilder) Build() Configuration {
 				panic(err)
 			}
 			return pb.NewBusinessIntClient(conn)
+		},
+		BusinessExtClientBuilder: func() pb.BusinessExtClient {
+			conn, err := grpc.DialContext(context.TODO(), "addrs:///127.0.0.1:8020", grpc.WithInsecure(), grpc.WithUnaryInterceptor(interceptor),
+				grpc.WithDefaultServiceConfig(fmt.Sprintf(`{"LoadBalancingPolicy": "%s"}`, roundrobin.Name)))
+			if err != nil {
+				panic(err)
+			}
+			return pb.NewBusinessExtClient(conn)
 		},
 	}
 }

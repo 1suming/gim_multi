@@ -19,6 +19,8 @@ message SignInReq {
   string phone_number = 1; // 手机号
   string code = 2; // 验证码
   int64 device_id = 3; // 设备id
+  int32 operate_type=4;//操作类型
+  string pwd=5 ; //密码@ms
 }
 message SignInResp {
   bool is_new = 1; // 是否是新用户
@@ -34,6 +36,7 @@ message User {
   string extra = 5; // 附加字段
   int64 create_time = 6; // 创建时间
   int64 update_time = 7; // 更新时间
+
 }
 
 message GetUserReq {

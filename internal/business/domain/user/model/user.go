@@ -15,6 +15,7 @@ type User struct {
 	Extra       string    // 附加属性
 	CreateTime  time.Time // 创建时间
 	UpdateTime  time.Time // 更新时间
+	Password    string    //密码 @ms
 }
 
 func (u *User) ToProto() *pb.User {
