@@ -26,12 +26,14 @@ func (*service) Register(ctx context.Context, device *Device) error {
 }
 
 // @ms 获取token
-func (*service) GetToken(ctx context.Context, phoneNumber string, code string, DeviceId int64) (*pb.SignInResp, error) {
+func (*service) GetToken(ctx context.Context, phoneNumber string, code string, DeviceId int64, operate_type int32, pwd string) (*pb.SignInResp, error) {
 
 	resp, err := rpc.GetBusinessExtClient().SignIn(ctx, &pb.SignInReq{
 		PhoneNumber: phoneNumber,
 		Code:        code,
 		DeviceId:    DeviceId,
+		OperateType: operate_type,
+		Pwd:         pwd,
 	})
 	if err != nil {
 		fmt.Println(err)
