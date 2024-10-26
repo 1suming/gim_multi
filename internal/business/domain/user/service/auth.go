@@ -5,9 +5,11 @@ import (
 	"gim/internal/business/domain/user/model"
 	"gim/internal/business/domain/user/repo"
 	"gim/pkg/gerrors"
+	"gim/pkg/logger"
 	"gim/pkg/protocol/pb"
 	"gim/pkg/rpc"
 	"gim/pkg/util"
+	"go.uber.org/zap"
 	"time"
 )
 
@@ -22,15 +24,18 @@ const (
 
 // SignIn 登录
 func (*authService) SignIn(ctx context.Context, phoneNumber, code string, deviceId int64, operate_type int32, pwd string) (bool, int64, string, error) {
-	user, err := repo.UserRepo.GetByPhoneNumber(phoneNumber)
+	user, err := repo.UserRepo.GetByPhoneNumber(phoneNumber) //
 	if err != nil {
+		logger.Logger.Info("SignIn", zap.Any("info", "1"))
 		return false, 0, "", err
 	}
 
 	var isNew = false
 
 	if operate_type == LOGIN_OPERATE_TYPE_REGISTER {
+		logger.Logger.Info("SignIn", zap.Any("info", "2"))
 		if user != nil {
+			logger.Logger.Info("SignIn", zap.Any("info", "3"))
 			return false, 0, "", gerrors.ErrUserExisted
 		}
 		if !Verify(phoneNumber, code) {

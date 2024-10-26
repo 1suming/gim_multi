@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"gim/internal/logic/api"
 	"gim/internal/logic/domain/device"
@@ -92,11 +91,11 @@ func GetToken(ctx *gin.Context) {
 	resp, err := device.Service.GetToken(ctx, req.PhoneNumber, req.Code, req.DeviceId, req.OperateType, req.Pwd)
 	if err != nil {
 		logger.Logger.Info("GetToken err", zap.Error(err))
-		if errors.Is(err, gerrors.ErrUserExisted) {
+		if err == gerrors.ErrUserExisted {
 			ctx.JSON(200, response.Errno(errs.ErrUserExisted))
 			return
 		}
-		if errors.Is(err, gerrors.ErrUserNotFound) || errors.Is(err, gerrors.ErrPasswordError) {
+		if err == gerrors.ErrUserNotFound || err == gerrors.ErrPasswordError {
 			ctx.JSON(200, response.Errno(errs.ErrAccountOrPasswordIncorrect))
 			return
 		}
