@@ -5,9 +5,11 @@ import (
 	"gim/internal/logic/api"
 	"gim/internal/logic/domain/device"
 	"gim/pkg/errs"
+	"gim/pkg/logger"
 	"gim/pkg/protocol/pb"
 	"gim/pkg/response"
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 const (
@@ -80,12 +82,14 @@ func GetToken(ctx *gin.Context) {
 	var req S_SignInReq
 	var httpResp S_SignInResp
 	if err := ctx.ShouldBind(&req); err != nil {
+		logger.Logger.Info("GetToken err", zap.Error(err))
 		ctx.JSON(400, response.Errno(errs.ErrParam))
 		return
 	}
 
 	resp, err := device.Service.GetToken(ctx, req.PhoneNumber, req.Code, req.DeviceId, req.OperateType, req.Pwd)
 	if err != nil {
+		logger.Logger.Info("GetToken err", zap.Error(err))
 		ctx.JSON(200, response.Errno(errs.ErrParam))
 		return
 	}
