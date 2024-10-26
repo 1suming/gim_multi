@@ -1,10 +1,12 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"gim/internal/logic/api"
 	"gim/internal/logic/domain/device"
 	"gim/pkg/errs"
+	"gim/pkg/gerrors"
 	"gim/pkg/logger"
 	"gim/pkg/protocol/pb"
 	"gim/pkg/response"
@@ -90,10 +92,17 @@ func GetToken(ctx *gin.Context) {
 	resp, err := device.Service.GetToken(ctx, req.PhoneNumber, req.Code, req.DeviceId, req.OperateType, req.Pwd)
 	if err != nil {
 		logger.Logger.Info("GetToken err", zap.Error(err))
+		if errors.Is(err, gerrors.ErrUserExisted) {
+			ctx.JSON(200, response.Errno(errs.ErrUserExisted))
+			return
+		}
+		if errors.Is(err, gerrors.ErrUserNotFound) || errors.Is(err, gerrors.ErrPasswordError) {
+			ctx.JSON(200, response.Errno(errs.ErrAccountOrPasswordIncorrect))
+			return
+		}
 		ctx.JSON(200, response.Errno(errs.ErrParam))
 		return
 	}
-
 	httpResp.IsNew = resp.IsNew
 	httpResp.Token = resp.Token
 	httpResp.UserId = resp.UserId
