@@ -62,12 +62,16 @@ type S_SignInReq struct {
 	PhoneNumber string `protobuf:"bytes,1,opt,name=phone_number,json=phoneNumber,proto3" json:"phone_number,omitempty"` // 手机号
 	Code        string `protobuf:"bytes,2,opt,name=code,proto3" json:"code,omitempty"`                                  // 验证码
 	DeviceId    int64  `protobuf:"varint,3,opt,name=device_id,json=deviceId,proto3" json:"device_id,omitempty"`         // 设备id
+
+	OperateType int32  `protobuf:"varint,4,opt,name=operate_type,json=operateType,proto3" json:"operate_type,omitempty"` //操作类型
+	Pwd         string `protobuf:"bytes,5,opt,name=pwd,proto3" json:"pwd,omitempty"`                                     //密码@ms
 }
 
 type S_SignInResp struct {
 	IsNew  bool   ` json:"is_new,omitempty"` // 是否是新用户
 	UserId int64  `json:"user_id,omitempty"` // 用户id
 	Token  string `json:"token,omitempty"`   // token
+
 }
 
 // 登录获取token
@@ -80,7 +84,7 @@ func GetToken(ctx *gin.Context) {
 		return
 	}
 
-	resp, err := device.Service.GetToken(ctx, req.PhoneNumber, req.Code, req.DeviceId)
+	resp, err := device.Service.GetToken(ctx, req.PhoneNumber, req.Code, req.DeviceId, req.OperateType, req.Pwd)
 	if err != nil {
 		ctx.JSON(200, response.Errno(errs.ErrParam))
 		return
