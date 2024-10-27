@@ -13,11 +13,12 @@ var App = new(app)
 // Register 注册设备
 func (*app) Register(ctx context.Context, in *pb.RegisterDeviceReq) (int64, error) {
 	device := Device{
-		Type:          in.Type,
-		Brand:         in.Brand,
-		Model:         in.Model,
-		SystemVersion: in.SystemVersion,
-		SDKVersion:    in.SdkVersion,
+		Type:           in.Type,
+		Brand:          in.Brand,
+		Model:          in.Model,
+		SystemVersion:  in.SystemVersion,
+		SDKVersion:     in.SdkVersion,
+		DeviceUniqueId: in.DeviceUniqueId,
 	}
 
 	// 判断设备信息是否合法

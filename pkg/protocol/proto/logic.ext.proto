@@ -49,6 +49,7 @@ message RegisterDeviceReq {
   string model = 4; // 机型
   string system_version = 5; // 系统版本
   string sdk_version = 6; // sdk版本号
+  string device_unique_id=7;//设备唯一id;@ms
 }
 message RegisterDeviceResp {
   int64 device_id = 1; // 设备id

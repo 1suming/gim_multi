@@ -23,6 +23,9 @@ type S_RegisterDeviceReq struct {
 	Model         string ` json:"model,omitempty"`          // 机型
 	SystemVersion string ` json:"system_version,omitempty"` // 系统版本
 	SdkVersion    string ` json:"sdk_version,omitempty"`    // sdk版本号
+
+	DeviceUniqueId string ` json:"device_unique_id"` //设备唯一id;@ms
+
 }
 type S_RegisterDeviceResp struct {
 	DeviceId int64 `json:"device_id"` // 设备id
@@ -41,15 +44,24 @@ func RegisterDevice(ctx *gin.Context) {
 		ctx.JSON(400, response.Errno(errs.ErrParam))
 		return
 	}
-
+	//&pb.RegisterDeviceReq{
+	//	Type:           1,
+	//	Brand:          "huawei",
+	//	Model:          "huawei P30",
+	//	SystemVersion:  "1.0.0",
+	//	SdkVersion:     "1.0.0",
+	//	DeviceUniqueId: "xx",
+	//})
 	resp, err := logicExt.RegisterDevice(ctx,
 		&pb.RegisterDeviceReq{
-			Type:          1,
-			Brand:         "huawei",
-			Model:         "huawei P30",
-			SystemVersion: "1.0.0",
-			SdkVersion:    "1.0.0",
+			Type:           req.Type,
+			Brand:          req.Brand,
+			Model:          req.Model,
+			SystemVersion:  req.SystemVersion,
+			SdkVersion:     req.SdkVersion,
+			DeviceUniqueId: req.DeviceUniqueId,
 		})
+
 	if err != nil {
 		fmt.Println(err)
 		ctx.JSON(200, response.Errno(errs.ErrParam))
