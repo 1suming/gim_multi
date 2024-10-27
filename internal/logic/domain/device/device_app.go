@@ -3,7 +3,9 @@ package device
 import (
 	"context"
 	"gim/pkg/gerrors"
+	"gim/pkg/logger"
 	"gim/pkg/protocol/pb"
+	"go.uber.org/zap"
 )
 
 type app struct{}
@@ -23,6 +25,7 @@ func (*app) Register(ctx context.Context, in *pb.RegisterDeviceReq) (int64, erro
 
 	// 判断设备信息是否合法
 	if !device.IsLegal() {
+		logger.Logger.Info("device isLegal", zap.Any("info", "not "))
 		return 0, gerrors.ErrBadRequest
 	}
 
