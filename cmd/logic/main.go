@@ -55,6 +55,7 @@ func main() {
 
 	r := gin.Default()
 	r.Use(middleware.Logger())
+	r.Use(middleware.CrosHandler())
 	setRouter(r)
 	logger.Logger.Info("http端口启动在8080")
 	go func() {
