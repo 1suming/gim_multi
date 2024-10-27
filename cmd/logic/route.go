@@ -41,6 +41,7 @@ func RegisterDevice(ctx *gin.Context) {
 	var req S_RegisterDeviceReq
 	var httpResp S_RegisterDeviceResp
 	if err := ctx.ShouldBind(&req); err != nil {
+		logger.Logger.Error("http request param error", zap.Error(err))
 		ctx.JSON(400, response.Errno(errs.ErrParam))
 		return
 	}
@@ -95,7 +96,7 @@ func GetToken(ctx *gin.Context) {
 	var req S_SignInReq
 	var httpResp S_SignInResp
 	if err := ctx.ShouldBind(&req); err != nil {
-		logger.Logger.Info("GetToken err", zap.Error(err))
+		logger.Logger.Error("http request err", zap.Error(err))
 		ctx.JSON(400, response.Errno(errs.ErrParam))
 		return
 	}

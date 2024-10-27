@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 )
 
@@ -26,7 +25,6 @@ func CrosHandler() gin.HandlerFunc {
 		context.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
 		// OPTIONS请求返回200
 		if context.Request.Method == "OPTIONS" {
-			fmt.Println(context.Request.Header)
 			context.AbortWithStatus(200)
 		} else {
 			context.Next()
