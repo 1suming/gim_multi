@@ -148,6 +148,8 @@ func (c *Conn) Send(pt pb.PackageType, requestId int64, message proto.Message, e
 		output.Data = msgBytes
 	}
 
+	logger.Logger.Debug("HandleMessage-Send", zap.Any("send", output))
+
 	outputBytes, err := proto.Marshal(&output)
 	if err != nil {
 		logger.Sugar.Error(err)
@@ -179,6 +181,7 @@ func (c *Conn) SignIn(input *pb.Input) {
 		ConnAddr:   config.Config.ConnectLocalAddr,
 		ClientAddr: c.GetAddr(),
 	})
+	logger.Logger.Debug(" SignIn", zap.Any("signIn", "ok,send pkg"))
 
 	c.Send(pb.PackageType_PT_SIGN_IN, input.RequestId, nil, err)
 	if err != nil {
