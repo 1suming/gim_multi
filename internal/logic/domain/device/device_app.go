@@ -25,7 +25,7 @@ func (*app) Register(ctx context.Context, in *pb.RegisterDeviceReq) (int64, erro
 
 	// 判断设备信息是否合法
 	if !device.IsLegal() {
-		logger.Logger.Info("device isLegal", zap.Any("info", "not "))
+		logger.Logger.Info("device isLegal", zap.Any("info", device))
 		return 0, gerrors.ErrBadRequest
 	}
 
