@@ -170,6 +170,7 @@ func (c *Conn) SignIn(input *pb.Input) {
 		logger.Sugar.Error(err)
 		return
 	}
+	logger.Logger.Debug(" SignIn", zap.Any("signIn", signIn))
 
 	_, err = rpc.GetLogicIntClient().ConnSignIn(grpclib.ContextWithRequestId(context.TODO(), input.RequestId), &pb.ConnSignInReq{
 		UserId:     signIn.UserId,
