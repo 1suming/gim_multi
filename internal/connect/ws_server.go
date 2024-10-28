@@ -75,6 +75,7 @@ func HandleReadErr(conn *Conn, err error) {
 	}
 
 	conn.Close()
+
 	// 客户端主动关闭连接或者异常程序退出
 	if err == io.EOF {
 		return
