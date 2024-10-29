@@ -60,6 +60,7 @@ func (*defaultBuilder) Build() Configuration {
 			}
 			return pb.NewBusinessIntClient(conn)
 		},
+		//@ms:
 		BusinessExtClientBuilder: func() pb.BusinessExtClient {
 			conn, err := grpc.DialContext(context.TODO(), "addrs:///127.0.0.1:8020", grpc.WithInsecure(), grpc.WithUnaryInterceptor(interceptor),
 				grpc.WithDefaultServiceConfig(fmt.Sprintf(`{"LoadBalancingPolicy": "%s"}`, roundrobin.Name)))
@@ -67,6 +68,15 @@ func (*defaultBuilder) Build() Configuration {
 				panic(err)
 			}
 			return pb.NewBusinessExtClient(conn)
+		},
+		LogicExtClientBuilder: func() pb.LogicExtClient {
+			//addrs:///docker.for.mac.host.internal:8010
+			conn, err := grpc.DialContext(context.TODO(), "addrs:///127.0.0.1:8010", grpc.WithInsecure(), grpc.WithUnaryInterceptor(interceptor),
+				grpc.WithDefaultServiceConfig(fmt.Sprintf(`{"LoadBalancingPolicy": "%s"}`, roundrobin.Name)))
+			if err != nil {
+				panic(err)
+			}
+			return pb.NewLogicExtClient(conn)
 		},
 	}
 }

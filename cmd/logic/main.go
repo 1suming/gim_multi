@@ -18,6 +18,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	"gim/internal/logic/apisocket"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 )
@@ -60,6 +61,13 @@ func main() {
 	logger.Logger.Info("http端口启动在8080")
 	go func() {
 		r.Run(":8888")
+	}()
+
+	// 启动WebSocket长链接服务器
+	go func() {
+		wsPort := ":8112"
+		apisocket.StartWSServer(wsPort)
+		logger.Logger.Info("启动websocket端口" + wsPort)
 	}()
 
 	logger.Logger.Info("rpc服务已经开启")

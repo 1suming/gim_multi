@@ -41,6 +41,7 @@ type Configuration struct {
 	BusinessIntClientBuilder func() pb.BusinessIntClient
 
 	BusinessExtClientBuilder func() pb.BusinessExtClient //@ms
+	LogicExtClientBuilder    func() pb.LogicExtClient    //@ms
 }
 
 func init() {

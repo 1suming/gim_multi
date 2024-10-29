@@ -11,6 +11,10 @@ enum PackageType {
   PT_HEARTBEAT = 3; // 心跳
   PT_MESSAGE = 4; // 消息投递
   PT_SUBSCRIBE_ROOM = 5; // 订阅房间
+
+ //@ms:add
+  PT_SEARCH_USER = 10001;//搜索用户
+  PT_FRIEND_ADD_FRIEND=10002;//添加好友
 }
 
 // 上行数据

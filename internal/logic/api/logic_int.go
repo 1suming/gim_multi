@@ -12,6 +12,10 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
+/*
+logicint ：ext表示内部服务之间的调用
+logext : 示对外暴露的接口
+*/
 type LogicIntServer struct {
 	pb.UnsafeLogicIntServer
 }
