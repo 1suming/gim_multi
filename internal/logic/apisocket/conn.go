@@ -36,6 +36,8 @@ type Conn struct {
 	DeviceId int64           // 设备ID
 	RoomId   int64           // 订阅的房间ID
 	Element  *list.Element   // 链表节点
+
+	LoginToken string //@ms:tmp 不应该保存，暂时为了方便
 }
 
 // Write 写入数据
@@ -201,6 +203,9 @@ func (c *Conn) SignIn(input *pb.Input) {
 
 	c.UserId = signIn.UserId
 	c.DeviceId = signIn.DeviceId
+	//@ms:add
+	c.LoginToken = signIn.Token //TODO
+
 	SetConn(signIn.DeviceId, c)
 }
 

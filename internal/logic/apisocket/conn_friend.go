@@ -19,7 +19,9 @@ func (c *Conn) Handle_AddFriend(input *pb.Input) {
 	}
 	logger.Logger.Info(" Handle_AddFriend", zap.Any("req", req))
 
-	_, err = logicExtServer.AddFriend(grpclib.ContextWithRequestId(context.TODO(), input.RequestId), &req)
+	deviceId, userId, token := c.DeviceId, c.UserId, c.LoginToken
+
+	_, err = logicExtServer.AddFriend(grpclib.ContextWithUserInfo(context.TODO(), input.RequestId, deviceId, userId, token), &req)
 
 	//var message proto.Message
 	//if err == nil {
@@ -44,8 +46,8 @@ func (c *Conn) Handle_SearchUser(input *pb.Input) {
 		logger.Logger.Error("handle_SearchUser", zap.Error(err))
 		return
 	}
-
-	resp, err := rpc.GetBusinessExtClient().SearchUser(grpclib.ContextWithRequestId(context.TODO(), input.RequestId), &req)
+	deviceId, userId, token := c.DeviceId, c.UserId, c.LoginToken
+	resp, err := rpc.GetBusinessExtClient().SearchUser(grpclib.ContextWithUserInfo(context.TODO(), input.RequestId, deviceId, userId, token), &req)
 	if err != nil {
 		logger.Logger.Error("handle_SearchUser", zap.Error(err))
 	}
