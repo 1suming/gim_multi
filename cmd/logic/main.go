@@ -66,8 +66,9 @@ func main() {
 	// 启动WebSocket长链接服务器
 	go func() {
 		wsPort := ":8112"
-		apisocket.StartWSServer(wsPort)
 		logger.Logger.Info("启动websocket端口" + wsPort)
+		apisocket.StartWSServer(wsPort)
+
 	}()
 
 	logger.Logger.Info("rpc服务已经开启")

@@ -24,6 +24,12 @@ message Input {
   bytes data = 3; // 数据
 }
 
+//@ms:msg server给router发消息
+message RouterMsgInput {
+   Input originInput =1;//原始数据
+   int64 user_id = 2; // 用户id
+
+}
 // 下行数据
 message Output {
   PackageType type = 1; // 包的类型

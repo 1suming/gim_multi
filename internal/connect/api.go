@@ -33,3 +33,7 @@ func (s *ConnIntServer) DeliverMessage(ctx context.Context, req *pb.DeliverMessa
 	conn.Send(pb.PackageType_PT_MESSAGE, grpclib.GetCtxRequestId(ctx), req.Message, nil)
 	return resp, nil
 }
+
+//func (s *ConnIntServer) HandleTransferProto(ctx context.Context, req *pb.RouterMsgInput) (*emptypb.Empty, error) {
+//
+//}

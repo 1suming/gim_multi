@@ -126,6 +126,40 @@ func (c *Conn) HandleMessage(bytes []byte) {
 	}
 }
 
+//func HandleMessage_Modify(routerMsgInput *pb.RouterMsgInput) (*emptypb.Empty, error) {
+//	//var input = new(pb.Input)
+//	//err := proto.Unmarshal(bytes, input)
+//	//if err != nil {
+//	//	logger.Logger.Error("unmarshal error", zap.Error(err), zap.Int("len", len(bytes)))
+//	//	return
+//	//}
+//	logger.Logger.Debug("HandleMessage_Modify", zap.Any("routerMsgInput", routerMsgInput))
+//	var input *pb.Input
+//	input = routerMsgInput.OriginInput
+//	// 对未登录的用户进行拦截
+//	if input.Type != pb.PackageType_PT_SIGN_IN && c.UserId == 0 {
+//		// 应该告诉用户没有登录
+//		logger.Logger.Error("未登录error")
+//		resp := &emptypb.Empty{}
+//		return resp, nil
+//	}
+//
+//	switch input.Type {
+//	case pb.PackageType_PT_SIGN_IN:
+//		c.SignIn(input)
+//	case pb.PackageType_PT_SYNC:
+//		c.Sync(input)
+//	case pb.PackageType_PT_HEARTBEAT:
+//		c.Heartbeat(input)
+//	case pb.PackageType_PT_MESSAGE:
+//		c.MessageACK(input)
+//	case pb.PackageType_PT_SUBSCRIBE_ROOM:
+//		c.SubscribedRoom(input)
+//	default:
+//		logger.Logger.Error("handler switch other")
+//	}
+//}
+
 // Send 下发消息
 func (c *Conn) Send(pt pb.PackageType, requestId int64, message proto.Message, err error) {
 	var output = pb.Output{
@@ -192,6 +226,13 @@ func (c *Conn) SignIn(input *pb.Input) {
 	c.DeviceId = signIn.DeviceId
 	SetConn(signIn.DeviceId, c)
 }
+
+//func SignIn_g(input *pb.Input) {
+//
+//	c.UserId = signIn.UserId
+//	c.DeviceId = signIn.DeviceId
+//	SetConn(signIn.DeviceId, c)
+//}
 
 // Sync 消息同步
 func (c *Conn) Sync(input *pb.Input) {
