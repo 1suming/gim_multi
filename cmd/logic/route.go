@@ -121,3 +121,46 @@ func GetToken(ctx *gin.Context) {
 
 	ctx.JSON(200, response.Ok(resp))
 }
+
+//searchUser
+//
+//type S_SearchUserReq struct {
+//	Keyword string `json:"keyword"`
+//}
+//type S_UserInfo struct {
+//	UserId      int64  `json:"user_id"`
+//	Type        int32  `json:"type"` //0 normal; 1 robot; 2 thing;
+//	Name        string `json:"name"`
+//	DisplayName string `json:"display_name"`
+//}
+//type S_SearchUserResp struct {
+//	UserInfos []S_UserInfo
+//}
+//
+//func handleSearchUser(ctx *gin.Context) {
+//
+//	var req S_SearchUserReq
+//	var httpResp S_SearchUserResp
+//	if err := ctx.ShouldBind(&req); err != nil {
+//		logger.Logger.Error("http request err", zap.Error(err))
+//		ctx.JSON(400, response.Errno(errs.ErrParam))
+//		return
+//	}
+//	resp, err := device.Service.GetToken(ctx, req.PhoneNumber, req.Code, req.DeviceId, req.OperateType, req.Pwd)
+//	if err != nil {
+//		logger.Logger.Info("GetToken err", zap.Error(err))
+//		//我们在调用errors.New("")来返回一个错误时， 可以通过比较指针，来比较error是否相等， 实际上就是控制相同的错误我们只创建一个error对象。否则对象复制一下，在比较就是false了。
+//		if gerrors.ErrUserExisted.Error() == err.Error() {
+//			ctx.JSON(200, response.Errno(errs.ErrUserExisted))
+//			return
+//		}
+//		if err.Error() == gerrors.ErrUserNotFound.Error() || err.Error() == gerrors.ErrPasswordError.Error() {
+//			ctx.JSON(200, response.Errno(errs.ErrAccountOrPasswordIncorrect))
+//			return
+//		}
+//		ctx.JSON(200, response.Errno(errs.ErrParam))
+//		return
+//	}
+//
+//	ctx.JSON(200, response.Ok(resp))
+//}

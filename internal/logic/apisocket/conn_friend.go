@@ -5,6 +5,7 @@ import (
 	"gim/pkg/grpclib"
 	"gim/pkg/logger"
 	"gim/pkg/protocol/pb"
+	"gim/pkg/rpc"
 	"go.uber.org/zap"
 	"google.golang.org/protobuf/proto"
 )
@@ -33,5 +34,25 @@ func (c *Conn) Handle_AddFriend(input *pb.Input) {
 	//c.Send(pb.PackageType_PT_SYNC, input.RequestId, message, err)
 
 	c.Send(pb.PackageType_PT_FRIEND_ADD_FRIEND, input.RequestId, nil, err)
+
+}
+func (c *Conn) Handle_SearchUser(input *pb.Input) {
+	logger.Logger.Info("Handle_SearchUser", zap.Any("input", input))
+	var req pb.SearchUserReq
+	err := proto.Unmarshal(input.Data, &req)
+	if err != nil {
+		logger.Logger.Error("handle_SearchUser", zap.Error(err))
+		return
+	}
+
+	resp, err := rpc.GetBusinessExtClient().SearchUser(grpclib.ContextWithRequestId(context.TODO(), input.RequestId), &req)
+	if err != nil {
+		logger.Logger.Error("handle_SearchUser", zap.Error(err))
+	}
+	//return resp, err
+
+	logger.Logger.Info(" handle_SearchUser", zap.Any("resp", resp))
+
+	c.Send(pb.PackageType_PT_SEARCH_USER, input.RequestId, resp, err)
 
 }
