@@ -127,6 +127,8 @@ func (c *Conn) HandleMessage(bytes []byte) {
 	//	c.MessageACK(input)
 	//case pb.PackageType_PT_SUBSCRIBE_ROOM:
 	//	c.SubscribedRoom(input)
+	case pb.PackageType_PT_FRIEND_ADD_FRIEND:
+		c.Handle_AddFriend(input)
 	default:
 		logger.Logger.Error("handler switch other")
 	}

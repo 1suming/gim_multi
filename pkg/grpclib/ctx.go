@@ -20,6 +20,15 @@ func ContextWithRequestId(ctx context.Context, requestId int64) context.Context 
 	return metadata.NewOutgoingContext(ctx, metadata.Pairs(CtxRequestId, strconv.FormatInt(requestId, 10)))
 }
 
+// @ms:add
+func ContextWithUserInfo(ctx context.Context, requestId int64, deviceId int64, userId int64, token string) context.Context {
+	return metadata.NewOutgoingContext(ctx, metadata.Pairs(CtxRequestId, strconv.FormatInt(requestId, 10),
+		CtxDeviceId, strconv.FormatInt(deviceId, 10),
+		CtxUserId, strconv.FormatInt(userId, 10),
+		CtxToken, token,
+	))
+}
+
 func Get(ctx context.Context, key string) string {
 	md, ok := metadata.FromIncomingContext(ctx)
 	if !ok {
