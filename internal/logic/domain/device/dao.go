@@ -2,7 +2,7 @@ package device
 
 import (
 	"errors"
-	"gim/internal/business/domain/user/model"
+	"gim/internal/logic/domain/user/model"
 	"gim/pkg/db"
 	"gim/pkg/gerrors"
 	"time"
