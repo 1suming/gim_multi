@@ -142,6 +142,9 @@ func (c *Conn) HandleMessage(bytes []byte) {
 	case pb.PackageType_PT_FRIEND_ADD_FRIEND:
 
 		c.Handle_AddFriend(input)
+
+	case pb.PackageType_PT_FRIEND_SEND_MSG_TO_FRIEND:
+		c.Handle_SendMessageToFriend(input)
 	default:
 		logger.Logger.Error("handler switch other")
 	}

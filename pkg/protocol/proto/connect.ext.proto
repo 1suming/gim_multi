@@ -19,7 +19,7 @@ enum PackageType {
   PT_UPDATE_USER=1004;
 
   PT_FRIEND_ADD_FRIEND=10010;//添加好友
-
+  PT_FRIEND_SEND_MSG_TO_FRIEND=10011;//给
 }
 
 // 上行数据
