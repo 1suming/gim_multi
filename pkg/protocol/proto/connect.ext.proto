@@ -14,7 +14,12 @@ enum PackageType {
 
  //@ms:add
   PT_SEARCH_USER = 10001;//搜索用户
-  PT_FRIEND_ADD_FRIEND=10002;//添加好友
+  PT_GET_USER=10002;
+  PT_GET_USERS=10003;
+  PT_UPDATE_USER=1004;
+
+  PT_FRIEND_ADD_FRIEND=10010;//添加好友
+
 }
 
 // 上行数据

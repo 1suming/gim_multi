@@ -130,8 +130,17 @@ func (c *Conn) HandleMessage(bytes []byte) {
 	//case pb.PackageType_PT_SUBSCRIBE_ROOM:
 	//	c.SubscribedRoom(input)
 	case pb.PackageType_PT_SEARCH_USER:
+
 		c.Handle_SearchUser(input)
+	case pb.PackageType_PT_GET_USER:
+		c.Handle_GetUser(input)
+	case pb.PackageType_PT_GET_USERS:
+		c.Handle_GetUsers(input)
+	case pb.PackageType_PT_UPDATE_USER:
+		c.Handle_UpdateUser(input)
+
 	case pb.PackageType_PT_FRIEND_ADD_FRIEND:
+
 		c.Handle_AddFriend(input)
 	default:
 		logger.Logger.Error("handler switch other")

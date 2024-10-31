@@ -26,3 +26,8 @@ message GetUsersReq {
 message GetUsersResp {
   map<int64, User> users = 1; // 用户信息
 }
+//@ms:增加userids数组 ,返回也是GetUsersResp
+message GetUserIdsReq {
+  repeated int64 user_ids = 1;
+}
+
