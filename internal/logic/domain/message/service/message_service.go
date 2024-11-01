@@ -104,7 +104,7 @@ func (*messageService) SendToUser(ctx context.Context, fromDeviceID, toUserID in
 		logger.Sugar.Error(err)
 		return 0, err
 	}
-	logger.Logger.Info("SendToUser", zap.Any("对方在线设备信息列表", devices))
+	logger.Logger.Info("SendToUser", zap.Any("在线设备信息列表", devices))
 	for i := range devices {
 		// 消息不需要投递给发送消息的设备
 		if fromDeviceID == devices[i].DeviceId {

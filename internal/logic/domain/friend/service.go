@@ -4,8 +4,10 @@ import (
 	"context"
 	"gim/internal/logic/proxy"
 	"gim/pkg/gerrors"
+	"gim/pkg/logger"
 	"gim/pkg/protocol/pb"
 	"gim/pkg/rpc"
+	"go.uber.org/zap"
 	"time"
 
 	"google.golang.org/protobuf/proto"
@@ -167,16 +169,22 @@ func (*service) SendToFriend(ctx context.Context, fromDeviceID, fromUserID int64
 		Content:  bytes,
 		SendTime: req.SendTime,
 	}
+	logger.Logger.Info("SendToFriend", zap.Any("自身------开始", fromUserID))
+
 	seq, err := proxy.MessageProxy.SendToUser(ctx, fromDeviceID, fromUserID, msg, true)
 	if err != nil {
 		return 0, err
 	}
+	logger.Logger.Info("SendToFriend", zap.Any("自身------结束", fromUserID))
+
+	logger.Logger.Info("SendToFriend", zap.Any("对方------开始", fromUserID))
 
 	// 发给接收者
 	_, err = proxy.MessageProxy.SendToUser(ctx, fromDeviceID, req.ReceiverId, msg, true)
 	if err != nil {
 		return 0, err
 	}
+	logger.Logger.Info("SendToFriend", zap.Any("对方------结束", fromUserID))
 
 	return seq, nil
 }
