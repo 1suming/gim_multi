@@ -193,6 +193,7 @@ func (c *Conn) Send(pt pb.PackageType, requestId int64, message proto.Message, e
 	err = c.Write(outputBytes)
 	if err != nil {
 		logger.Sugar.Error(err)
+		logger.Logger.Debug("send byte len error:", zap.Error(err))
 		c.Close()
 		return
 	}
