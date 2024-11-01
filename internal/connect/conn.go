@@ -49,11 +49,13 @@ func (c *Conn) Write(bytes []byte) error {
 func (c *Conn) WriteToWS(bytes []byte) error {
 	c.WSMutex.Lock()
 	defer c.WSMutex.Unlock()
-
+	logger.Logger.Info("WriteToWS", zap.Any("bytes", len(bytes)))
 	err := c.WS.SetWriteDeadline(time.Now().Add(10 * time.Millisecond))
 	if err != nil {
+		logger.Logger.Info("WriteToWS22", zap.Any("bytes", len(bytes)))
 		return err
 	}
+	logger.Logger.Info("WriteToWS33", zap.Any("bytes", len(bytes)))
 	return c.WS.WriteMessage(websocket.BinaryMessage, bytes)
 }
 
