@@ -31,6 +31,8 @@ func (s *ConnIntServer) DeliverMessage(ctx context.Context, req *pb.DeliverMessa
 	}
 	logger.Logger.Info("devliveMsg: PackageType_PT_MESSAGE", zap.Any("req", req))
 	conn.Send(pb.PackageType_PT_MESSAGE, grpclib.GetCtxRequestId(ctx), req.Message, nil)
+
+	PushAll(req.Message) //TODO
 	return resp, nil
 }
 
