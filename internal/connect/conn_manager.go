@@ -33,6 +33,7 @@ func DeleteConn(deviceId int64) {
 func PushAll(message *pb.Message) {
 	ConnsManager.Range(func(key, value interface{}) bool {
 		conn := value.(*Conn)
+		logger.Logger.Info("pushall", zap.Any("userid:", conn.UserId), zap.Any("device", conn.DeviceId))
 		conn.Send(pb.PackageType_PT_MESSAGE, 0, message, nil)
 		return true
 	})
