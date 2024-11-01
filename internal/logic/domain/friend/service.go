@@ -168,6 +168,10 @@ func (*service) SendToFriend(ctx context.Context, fromDeviceID, fromUserID int64
 		Code:     int32(pb.PushCode_PC_USER_MESSAGE),
 		Content:  bytes,
 		SendTime: req.SendTime,
+
+		FromUserId:       fromUserID,     //来自于用户id
+		ToUserId:         req.ReceiverId, //目标用户id
+		ConversationType: pb.MessageConversationType_FRIEND,
 	}
 	logger.Logger.Info("SendToFriend", zap.Any("自身------开始", fromUserID))
 
