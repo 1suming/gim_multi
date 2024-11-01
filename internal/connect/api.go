@@ -17,7 +17,7 @@ type ConnIntServer struct {
 // DeliverMessage 投递消息
 func (s *ConnIntServer) DeliverMessage(ctx context.Context, req *pb.DeliverMessageReq) (*emptypb.Empty, error) {
 	resp := &emptypb.Empty{}
-
+	logger.Logger.Info("DeliverMessage func start", zap.Any("req", req))
 	// 获取设备对应的TCP连接
 	conn := GetConn(req.DeviceId)
 	if conn == nil {
@@ -29,7 +29,7 @@ func (s *ConnIntServer) DeliverMessage(ctx context.Context, req *pb.DeliverMessa
 		logger.Logger.Warn("GetConn warn", zap.Int64("device_id", req.DeviceId))
 		return resp, nil
 	}
-
+	logger.Logger.Info("devliveMsg: PackageType_PT_MESSAGE", zap.Any("req", req))
 	conn.Send(pb.PackageType_PT_MESSAGE, grpclib.GetCtxRequestId(ctx), req.Message, nil)
 	return resp, nil
 }
