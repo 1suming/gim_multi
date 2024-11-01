@@ -184,14 +184,13 @@ func (c *Conn) Send(pt pb.PackageType, requestId int64, message proto.Message, e
 		output.Data = msgBytes
 	}
 
-	logger.Logger.Debug("HandleMessage-Send", zap.Any("send", output))
+	logger.Logger.Debug("func Send", zap.Any("send", output))
 
 	outputBytes, err := proto.Marshal(&output)
 	if err != nil {
 		logger.Sugar.Error(err)
 		return
 	}
-	logger.Logger.Debug("send byte len:", zap.Int("len", len(outputBytes)))
 	err = c.Write(outputBytes)
 	if err != nil {
 		logger.Sugar.Error(err)
