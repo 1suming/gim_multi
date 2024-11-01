@@ -1,7 +1,9 @@
 package connect
 
 import (
+	"gim/pkg/logger"
 	"gim/pkg/protocol/pb"
+	"go.uber.org/zap"
 	"sync"
 )
 
@@ -14,6 +16,7 @@ func SetConn(deviceId int64, conn *Conn) {
 
 // GetConn 获取
 func GetConn(deviceId int64) *Conn {
+	logger.Logger.Debug("GetConn", zap.Any("deviceid:", deviceId))
 	value, ok := ConnsManager.Load(deviceId)
 	if ok {
 		return value.(*Conn)
