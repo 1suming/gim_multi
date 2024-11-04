@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"gim/internal/logic/commonFunc"
 	"gim/internal/logic/domain/message/model"
 	"gim/internal/logic/domain/message/repo"
 	"gim/internal/logic/proxy"
@@ -125,7 +126,7 @@ func (m *messageService) SendToDevice(ctx context.Context, device *pb.Device, me
 	//	Message:  message,
 	//})
 
-	_, err := proxy.DeliverMessage(picker.ContextWithAddr(ctx, device.ConnAddr), &pb.DeliverMessageReq{
+	_, err := commonFunc.DeliverMessage(picker.ContextWithAddr(ctx, device.ConnAddr), &pb.DeliverMessageReq{
 		DeviceId: device.DeviceId,
 		Message:  message,
 	})
