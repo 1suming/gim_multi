@@ -7,10 +7,10 @@ import (
 	"gim/pkg/logger"
 	"gim/pkg/mq"
 	"gim/pkg/protocol/pb"
-	"gim/pkg/rpc"
 	"gim/pkg/util"
 	"time"
 
+	messageService "gim/internal/logic/domain/message/service"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -113,7 +113,11 @@ func (s *service) SubscribeRoom(ctx context.Context, req *pb.SubscribeRoomReq) e
 	}
 
 	for i := range messages {
-		_, err := rpc.GetConnectIntClient().DeliverMessage(picker.ContextWithAddr(ctx, req.ConnAddr), &pb.DeliverMessageReq{
+		//_, err := rpc.GetConnectIntClient().DeliverMessage(picker.ContextWithAddr(ctx, req.ConnAddr), &pb.DeliverMessageReq{
+		//	DeviceId: req.DeviceId,
+		//	Message:  messages[i],
+		//})
+		_, err := messageService.MessageService.DeliverMessage(picker.ContextWithAddr(ctx, req.ConnAddr), &pb.DeliverMessageReq{
 			DeviceId: req.DeviceId,
 			Message:  messages[i],
 		})

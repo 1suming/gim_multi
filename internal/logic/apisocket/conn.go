@@ -227,19 +227,3 @@ func (c *Conn) Heartbeat(input *pb.Input) {
 
 	logger.Sugar.Infow("heartbeat", "device_id", c.DeviceId, "user_id", c.UserId)
 }
-
-func SetConn(deviceId int64, conn *Conn) {
-	//ConnsManager.Store(deviceId, conn)
-}
-
-// GetConn 获取
-func GetConn(deviceId int64) *Conn {
-	//value, ok := ConnsManager.Load(deviceId)
-	//if ok {
-	//	return value.(*Conn)
-	//}
-	return nil
-}
-func DeleteConn(deviceId int64) {
-
-}
