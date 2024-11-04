@@ -4,7 +4,7 @@ import (
 	"container/list"
 	"context"
 	"gim/config"
-	"gim/pkg/grpclib"
+	"gim/internal/logic/domain/device"
 	"gim/pkg/logger"
 	"gim/pkg/protocol/pb"
 	"sync"
@@ -15,8 +15,6 @@ import (
 	"go.uber.org/zap"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/proto"
-
-	"gim/internal/logic/api"
 )
 
 const (
@@ -24,8 +22,9 @@ const (
 	ConnTypeWS  int8 = 2 // websocket连接
 )
 
-var logicIntServer *api.LogicIntServer = &api.LogicIntServer{}
-var logicExtServer *api.LogicExtServer = &api.LogicExtServer{}
+//var logicIntServer *api.LogicIntServer = &api.LogicIntServer{}
+
+//var logicExtServer *api.LogicExtServer = &api.LogicExtServer{}
 
 type Conn struct {
 	CoonType int8            // 连接类型
@@ -77,11 +76,13 @@ func (c *Conn) Close() error {
 
 	if c.DeviceId != 0 {
 		//_, _ = rpc.GetLogicIntClient().Offline(context.TODO(), &pb.OfflineReq{
-		_, _ = logicIntServer.Offline(context.TODO(), &pb.OfflineReq{
-			UserId:     c.UserId,
-			DeviceId:   c.DeviceId,
-			ClientAddr: c.GetAddr(),
-		})
+		//_, _ = logicIntServer.Offline(context.TODO(), &pb.OfflineReq{
+		//UserId:     c.UserId,
+		//	DeviceId:   c.DeviceId,
+		//		ClientAddr: c.GetAddr(),
+
+		_ = device.App.Offline(context.TODO(), c.DeviceId, c.GetAddr())
+
 	}
 
 	if c.CoonType == CoonTypeTCP {
@@ -199,13 +200,23 @@ func (c *Conn) SignIn(input *pb.Input) {
 	logger.Logger.Debug(" SignIn", zap.Any("signIn", signIn))
 
 	//_, err = rpc.GetLogicIntClient().ConnSignIn(grpclib.ContextWithRequestId(context.TODO(), input.RequestId), &pb.ConnSignInReq{\
-	_, err = logicIntServer.ConnSignIn(grpclib.ContextWithRequestId(context.TODO(), input.RequestId), &pb.ConnSignInReq{
+	//_, err = logicIntServer.ConnSignIn(grpclib.ContextWithRequestId(context.TODO(), input.RequestId), &pb.ConnSignInReq{
+	//	UserId:     signIn.UserId,
+	//	DeviceId:   signIn.DeviceId,
+	//	Token:      signIn.Token,
+	//	ConnAddr:   config.Config.ConnectLocalAddr,
+	//	ClientAddr: c.GetAddr(),
+	//})
+	req := pb.ConnSignInReq{
 		UserId:     signIn.UserId,
 		DeviceId:   signIn.DeviceId,
 		Token:      signIn.Token,
 		ConnAddr:   config.Config.ConnectLocalAddr,
 		ClientAddr: c.GetAddr(),
-	})
+	}
+
+	err = device.App.SignIn(context.TODO(), req.UserId, req.DeviceId, req.Token, req.ConnAddr, req.ClientAddr)
+
 	logger.Logger.Debug(" SignIn", zap.Any("signIn", "ok,send pkg"))
 
 	c.Send(pb.PackageType_PT_SIGN_IN, input.RequestId, nil, err)
