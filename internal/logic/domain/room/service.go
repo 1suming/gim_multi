@@ -2,6 +2,7 @@ package room
 
 import (
 	"context"
+	"gim/internal/logic/proxy"
 	"gim/pkg/gerrors"
 	"gim/pkg/grpclib/picker"
 	"gim/pkg/logger"
@@ -10,7 +11,6 @@ import (
 	"gim/pkg/util"
 	"time"
 
-	messageService "gim/internal/logic/domain/message/service"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -117,7 +117,7 @@ func (s *service) SubscribeRoom(ctx context.Context, req *pb.SubscribeRoomReq) e
 		//	DeviceId: req.DeviceId,
 		//	Message:  messages[i],
 		//})
-		_, err := messageService.MessageService.DeliverMessage(picker.ContextWithAddr(ctx, req.ConnAddr), &pb.DeliverMessageReq{
+		_, err := proxy.DeliverMessage(picker.ContextWithAddr(ctx, req.ConnAddr), &pb.DeliverMessageReq{
 			DeviceId: req.DeviceId,
 			Message:  messages[i],
 		})

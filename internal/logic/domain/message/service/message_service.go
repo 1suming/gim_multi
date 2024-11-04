@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"gim/internal/logic/apisocket"
 	"gim/internal/logic/domain/message/model"
 	"gim/internal/logic/domain/message/repo"
 	"gim/internal/logic/proxy"
@@ -12,8 +11,6 @@ import (
 	"gim/pkg/protocol/pb"
 	"gim/pkg/rpc"
 	"gim/pkg/util"
-	"google.golang.org/protobuf/types/known/emptypb"
-
 	"go.uber.org/zap"
 	"google.golang.org/protobuf/proto"
 )
@@ -128,7 +125,7 @@ func (m *messageService) SendToDevice(ctx context.Context, device *pb.Device, me
 	//	Message:  message,
 	//})
 
-	_, err := m.DeliverMessage(picker.ContextWithAddr(ctx, device.ConnAddr), &pb.DeliverMessageReq{
+	_, err := proxy.DeliverMessage(picker.ContextWithAddr(ctx, device.ConnAddr), &pb.DeliverMessageReq{
 		DeviceId: device.DeviceId,
 		Message:  message,
 	})
@@ -149,25 +146,4 @@ func (*messageService) AddSenderInfo(sender *pb.Sender) {
 		sender.Nickname = user.User.Nickname
 		sender.Extra = user.User.Extra
 	}
-}
-
-// DeliverMessage 投递消息
-func (m *messageService) DeliverMessage(ctx context.Context, req *pb.DeliverMessageReq) (*emptypb.Empty, error) {
-	resp := &emptypb.Empty{}
-	logger.Logger.Info("DeliverMessage func start", zap.Any("req", req))
-	//// 获取设备对应的TCP连接
-	conn := apisocket.GetConn(req.DeviceId)
-	if conn == nil {
-		logger.Logger.Warn("GetConn warn", zap.Int64("device_id", req.DeviceId))
-		return resp, nil
-	}
-
-	if conn.DeviceId != req.DeviceId {
-		logger.Logger.Warn("GetConn warn", zap.Int64("device_id", req.DeviceId))
-		return resp, nil
-	}
-	logger.Logger.Info("devliveMsg: PackageType_PT_MESSAGE", zap.Any("req", req))
-	conn.Send(pb.PackageType_PT_MESSAGE, grpclib.GetCtxRequestId(ctx), req.Message, nil)
-
-	return resp, nil
 }
