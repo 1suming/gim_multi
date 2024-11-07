@@ -47,6 +47,6 @@ func (*app) SetFriend(ctx context.Context, userId int64, req *pb.SetFriendReq) e
 }
 
 // SendToFriend 消息发送至好友
-func (*app) SendToFriend(ctx context.Context, fromDeviceID, fromUserID int64, req *pb.SendMessageReq) (int64, error) {
+func (*app) SendToFriend(ctx context.Context, fromDeviceID, fromUserID int64, req *pb.SendMessageReq) (int64, int64, error) {
 	return Service.SendToFriend(ctx, fromDeviceID, fromUserID, req)
 }

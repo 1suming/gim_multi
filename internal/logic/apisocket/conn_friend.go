@@ -63,8 +63,9 @@ func (c *Conn) Handle_SendMessageToFriend(input *pb.Input) error {
 	logger.Logger.Info(" Handle_SendMessageToFriend", zap.Any("req", req))
 
 	deviceId, userId := c.DeviceId, c.UserId
-	seq, err := friend.App.SendToFriend(context.TODO(), deviceId, userId, &req)
-
+	seq, targetSeq, err := friend.App.SendToFriend(context.TODO(), deviceId, userId, &req)
+	_ = targetSeq
+	
 	resp, err := &pb.SendMessageResp{Seq: seq}, nil
 
 	sendTime := util.GetNowTime()
