@@ -34,7 +34,8 @@ func (*LogicExtServer) SendMessageToFriend(ctx context.Context, in *pb.SendMessa
 		return nil, err
 	}
 
-	seq, err := friend.App.SendToFriend(ctx, deviceId, userId, in)
+	seq, targetSeq, err := friend.App.SendToFriend(ctx, deviceId, userId, in)
+	_ = targetSeq
 	if err != nil {
 		return nil, err
 	}
