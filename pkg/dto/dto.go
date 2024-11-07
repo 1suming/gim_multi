@@ -12,6 +12,8 @@ type SaveOrUpdateRecentContactDTO struct {
 	LastMessageId      int64
 	LastMessageContent string
 	LastTime           time.Time
+
+	LastTargetMessageId int64 //@ms:target的lastMessageId
 }
 
 type UserRecentConversationSingle struct {

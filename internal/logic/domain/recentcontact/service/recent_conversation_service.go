@@ -21,11 +21,11 @@ var RecentConversationService = new(SRecentConversationService)
 
 func (r *SRecentConversationService) SaveOrUpdate(ctx context.Context, dataDto *dto.SaveOrUpdateRecentContactDTO) error {
 
-	err := r._saveOrUpdateSingle(ctx, dataDto, dataDto.OwnerUid, dataDto.TargetId)
+	err := r._saveOrUpdateSingle(ctx, dataDto, dataDto.OwnerUid, dataDto.TargetId, dataDto.LastMessageId)
 	if err != nil {
 		return err
 	}
-	err = r._saveOrUpdateSingle(ctx, dataDto, dataDto.TargetId, dataDto.OwnerUid)
+	err = r._saveOrUpdateSingle(ctx, dataDto, dataDto.TargetId, dataDto.OwnerUid, dataDto.LastTargetMessageId)
 	if err != nil {
 		return err
 	}
@@ -50,7 +50,7 @@ func (r *SRecentConversationService) SaveOrUpdate(ctx context.Context, dataDto *
 const REDIS_KEY_CONVERSAION_UNREAD_TOTAL_CNT = "conversation_unread_T" //总未读
 const REDIS_KEY_CONVERSAION_UNREAD_CNT = "conversation_unread_C"       //会话未读
 
-func (r *SRecentConversationService) _saveOrUpdateSingle(ctx context.Context, dataDto *dto.SaveOrUpdateRecentContactDTO, sourceId int64, targetId int64) error {
+func (r *SRecentConversationService) _saveOrUpdateSingle(ctx context.Context, dataDto *dto.SaveOrUpdateRecentContactDTO, sourceId int64, targetId int64, lastMessageId int64) error {
 	var recentConversationModel *model.ImRecentConversation
 
 	recentConversationModel, err := repo.RecentContactRepo.Get(dataDto.ConversationType, sourceId, targetId)
@@ -63,7 +63,7 @@ func (r *SRecentConversationService) _saveOrUpdateSingle(ctx context.Context, da
 			ConversationType:   dataDto.ConversationType,
 			OwnerUid:           sourceId,
 			LastMessageContent: dataDto.LastMessageContent,
-			LastMessageId:      dataDto.LastMessageId,
+			LastMessageId:      lastMessageId,
 			TargetId:           targetId,
 			LastTime:           dataDto.LastTime,
 		}
