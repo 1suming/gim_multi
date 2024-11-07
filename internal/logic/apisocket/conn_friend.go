@@ -3,12 +3,16 @@ package apisocket
 import (
 	ctx "context"
 	"gim/internal/logic/domain/friend"
+	"gim/pkg/dto"
 	"gim/pkg/logger"
 	"gim/pkg/protocol/pb"
+	"gim/pkg/util"
 	"go.uber.org/zap"
 	"golang.org/x/net/context"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/emptypb"
+
+	recentContactService "gim/internal/logic/domain/recentcontact/service"
 )
 
 func (c *Conn) Handle_AddFriend(input *pb.Input) error {
@@ -63,6 +67,22 @@ func (c *Conn) Handle_SendMessageToFriend(input *pb.Input) error {
 
 	resp, err := &pb.SendMessageResp{Seq: seq}, nil
 
+	sendTime := util.GetNowTime()
+	saveOrUpdateRecentContactDTO := dto.SaveOrUpdateRecentContactDTO{
+		ConversationType:   int8(pb.MessageConversationType_FRIEND),
+		LastMessageContent: string(req.Content),
+		LastMessageId:      seq,
+		TargetId:           req.ReceiverId,
+		LastTime:           sendTime,
+		OwnerUid:           userId,
+	}
+	//保存或更新会话信息
+	err = recentContactService.RecentConversationService.SaveOrUpdate(context.TODO(), &saveOrUpdateRecentContactDTO)
+	if err != nil {
+		logger.Logger.Error("Handle_SendMessageToFriend", zap.Error(err))
+		c.Send(pb.PackageType_PT_FRIEND_SEND_MSG_TO_FRIEND, input.RequestId, nil, err)
+		return err
+	}
 	c.Send(pb.PackageType_PT_FRIEND_SEND_MSG_TO_FRIEND, input.RequestId, resp, err)
 	return nil
 }

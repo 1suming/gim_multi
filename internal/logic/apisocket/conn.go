@@ -146,6 +146,10 @@ func (c *Conn) HandleMessage(bytes []byte) {
 
 	case pb.PackageType_PT_FRIEND_SEND_MSG_TO_FRIEND:
 		c.Handle_SendMessageToFriend(input)
+
+		//会话列表
+	case pb.PackageType_PT_GET_USER_CONVERSATIONS:
+		c.Handle_GetUserConversations(input)
 	default:
 		logger.Logger.Error("handler switch other")
 	}
@@ -159,9 +163,16 @@ func (c *Conn) Send(pt pb.PackageType, requestId int64, message proto.Message, e
 	}
 
 	if err != nil {
-		status, _ := status.FromError(err)
-		output.Code = int32(status.Code())
-		output.Message = status.Message()
+		status, ok := status.FromError(err)
+		if ok {
+			output.Code = int32(status.Code())
+			output.Message = status.Message()
+		} else {
+			//@ms:有可能不是gwrap的grcp封装的错误
+			output.Code = int32(-1)
+			output.Message = "未知错误"
+		}
+
 	}
 
 	if message != nil {

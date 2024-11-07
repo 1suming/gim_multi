@@ -147,10 +147,12 @@ func (*service) AgreeAddFriend(ctx context.Context, userId, friendId int64, rema
 }
 
 // SendToFriend 消息发送至好友
-func (*service) SendToFriend(ctx context.Context, fromDeviceID, fromUserID int64, req *pb.SendMessageReq) (int64, error) {
+func (*service) SendToFriend(ctx context.Context, fromDeviceID, fromUserID int64, req *pb.SendMessageReq) (int64, int64, error) {
+	senderSeq := int64(0)
+	targetSeq := int64(0)
 	sender, err := rpc.GetSender(fromDeviceID, fromUserID)
 	if err != nil {
-		return 0, err
+		return senderSeq, targetSeq, err
 	}
 
 	// 发给发送者
@@ -161,7 +163,7 @@ func (*service) SendToFriend(ctx context.Context, fromDeviceID, fromUserID int64
 	}
 	bytes, err := proto.Marshal(&push)
 	if err != nil {
-		return 0, err
+		return senderSeq, targetSeq, err
 	}
 
 	msg := &pb.Message{
@@ -177,18 +179,18 @@ func (*service) SendToFriend(ctx context.Context, fromDeviceID, fromUserID int64
 
 	seq, err := proxy.MessageProxy.SendToUser(ctx, fromDeviceID, fromUserID, msg, true)
 	if err != nil {
-		return 0, err
+		return senderSeq, targetSeq, err
 	}
 	logger.Logger.Info("SendToFriend", zap.Any("自身------结束", fromUserID))
 
 	logger.Logger.Info("SendToFriend", zap.Any("对方------开始", fromUserID))
 
 	// 发给接收者
-	_, err = proxy.MessageProxy.SendToUser(ctx, fromDeviceID, req.ReceiverId, msg, true)
+	targetSeq, err = proxy.MessageProxy.SendToUser(ctx, fromDeviceID, req.ReceiverId, msg, true)
 	if err != nil {
-		return 0, err
+		return senderSeq, targetSeq, err
 	}
 	logger.Logger.Info("SendToFriend", zap.Any("对方------结束", fromUserID))
 
-	return seq, nil
+	return seq, targetSeq, nil
 }

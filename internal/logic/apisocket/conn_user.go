@@ -2,7 +2,9 @@ package apisocket
 
 import (
 	"context"
+	recentContactService "gim/internal/logic/domain/recentcontact/service"
 	app2 "gim/internal/logic/domain/user/app"
+	"gim/pkg/dto"
 	"gim/pkg/logger"
 	"gim/pkg/protocol/pb"
 	"go.uber.org/zap"
@@ -104,5 +106,54 @@ func (c *Conn) Handle_UpdateUser(input *pb.Input) error {
 	err = app2.UserApp.Update(context.TODO(), userId, &req)
 	// new(emptypb.Empty), app2.UserApp.Update(ctx, userId, req)
 	c.Send(pb.PackageType_PT_UPDATE_USER, input.RequestId, resp, err)
+	return nil
+}
+func (c *Conn) Handle_GetUserConversations(input *pb.Input) error {
+
+	var req pb.GetUserConversationsReq
+	err := proto.Unmarshal(input.Data, &req)
+	if err != nil {
+		logger.Logger.Error("Handle_GetUserConversations", zap.Error(err))
+		c.Send(pb.PackageType_PT_GET_USER_CONVERSATIONS, input.RequestId, nil, err)
+		return err
+
+	}
+	logger.Logger.Info(" Handle_GetUserConversations", zap.Any("req", req))
+
+	userId := c.UserId
+	var userRecentConverationAll dto.UserRecentConversationAll
+	err = recentContactService.RecentConversationService.GetUserRecentConversations(context.TODO(), userId, &userRecentConverationAll)
+	if err != nil {
+		logger.Logger.Error("handle func", zap.Error(err))
+		c.Send(pb.PackageType_PT_GET_USER_CONVERSATIONS, input.RequestId, nil, err)
+		return err
+	}
+	logger.Logger.Info("Handle_GetUserConversations", zap.Any("userRecentConverationAll", userRecentConverationAll))
+
+	//messages, hasMore, err := MessageService.ListByUserIdAndSeq(ctx, userId, seq)
+	//if err != nil {
+	//	return nil, err
+	//}
+	//pbMessages := model.MessagesToPB(messages)
+	//length := len(pbMessages)
+	//
+	//resp := &pb.SyncResp{Messages: pbMessages, HasMore: hasMore}
+	//bytes, err := proto.Marshal(resp)
+	//if err != nil {
+	//	return nil, err
+	//}
+	//
+	//// 如果字节数组大于一个包的长度，需要减少字节数组
+	//for len(bytes) > MaxSyncBufLen {
+	//
+	//}
+	pbConversations := dto.UserRecentConversationsToPB(userRecentConverationAll.Conversations)
+
+	resp := &pb.GetUserConversationsResp{
+		Conversations:  pbConversations,
+		TotalUnreadCnt: userRecentConverationAll.TotalUnread,
+	}
+
+	c.Send(pb.PackageType_PT_GET_USER_CONVERSATIONS, input.RequestId, resp, err)
 	return nil
 }

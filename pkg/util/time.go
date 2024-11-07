@@ -21,3 +21,7 @@ func UnixMilliTime(t time.Time) int64 {
 func UnunixMilliTime(unix int64) time.Time {
 	return time.Unix(0, unix*1000000)
 }
+
+func GetNowTime() time.Time {
+	return time.Now()
+}

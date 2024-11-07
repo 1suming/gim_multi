@@ -20,6 +20,8 @@ enum PackageType {
 
   PT_FRIEND_ADD_FRIEND=10010;//添加好友
   PT_FRIEND_SEND_MSG_TO_FRIEND=10011;//给
+
+  PT_GET_USER_CONVERSATIONS =20001;//用户会话
 }
 
 // 上行数据
@@ -75,3 +77,43 @@ message MessageACK {
   int64 device_ack = 2; // 设备收到消息的确认号
   int64 receive_time = 3; // 消息接收时间戳，精确到毫秒
 }
+
+
+//@ms:
+// 消息同步请求,package_type:2
+message GetUserConversationsReq {
+   int64 user_id = 1;
+}
+
+//
+//    type UserRecentConversationSingle struct {
+//ConversationType   int8
+//    OwnerUid           int64
+//    TargetId           int64
+//    LastMessageId      int64
+//    LastMessageContent string
+//LastTime           time.Time
+//    UnreadCnt          int64
+//    }
+//
+//type UserRecentConversationAll struct {
+//TotalUnread   int64
+//    Conversations []*UserRecentConversationSingle
+//    }
+message UserRecentConversationSingle {
+  int32 conversation_type=1;
+  int64 owner_uid=2;
+   int64 target_id=3;
+   int64 last_message_id=4;
+   string last_message_content=5;
+   int64 last_time=6;
+    int64 unread_cnt=7;
+}
+
+// 消息同步响应,package_type:2
+message GetUserConversationsResp {
+  int64 total_unread_cnt=1;//未读消息数量
+  repeated UserRecentConversationSingle conversations =2; // 消息列表
+
+}
+

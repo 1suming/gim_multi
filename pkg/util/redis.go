@@ -16,6 +16,10 @@ func NewRedisUtil(client *redis.Client) *RedisUtil {
 	return &RedisUtil{client: client}
 }
 
+func (u *RedisUtil) GetRedisClient() *redis.Client {
+	return u.client
+}
+
 // Set 将指定值设置到redis中，使用json的序列化方式
 func (u *RedisUtil) Set(key string, value interface{}, duration time.Duration) error {
 	bytes, err := jsoniter.Marshal(value)
