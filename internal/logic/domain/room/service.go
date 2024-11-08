@@ -2,7 +2,7 @@ package room
 
 import (
 	"context"
-	"gim/internal/logic/apisocket"
+	"gim/internal/logic/proxy"
 	"gim/pkg/gerrors"
 	"gim/pkg/grpclib/picker"
 	"gim/pkg/logger"
@@ -117,7 +117,7 @@ func (s *service) SubscribeRoom(ctx context.Context, req *pb.SubscribeRoomReq) e
 		//	DeviceId: req.DeviceId,
 		//	Message:  messages[i],
 		//})
-		_, err := apisocket.DeliverMessage(picker.ContextWithAddr(ctx, req.ConnAddr), &pb.DeliverMessageReq{
+		_, err := proxy.DeliveMessageProxy.DeliverMessage(picker.ContextWithAddr(ctx, req.ConnAddr), &pb.DeliverMessageReq{
 			DeviceId: req.DeviceId,
 			Message:  messages[i],
 		})
