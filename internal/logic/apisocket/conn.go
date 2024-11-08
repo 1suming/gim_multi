@@ -5,7 +5,6 @@ import (
 	"context"
 	"gim/config"
 	"gim/internal/logic/api_handler"
-	"gim/internal/logic/connManage"
 	"gim/internal/logic/domain/device"
 	"gim/pkg/logger"
 	"gim/pkg/protocol/pb"
@@ -68,7 +67,7 @@ func (c *Conn) WriteToWS(bytes []byte) error {
 func (c *Conn) Close() error {
 	// 取消设备和连接的对应关系
 	if c.DeviceId != 0 {
-		connManage.DeleteConn(c.DeviceId)
+		DeleteConn(c.DeviceId)
 	}
 
 	//// 取消订阅，需要异步出去，防止重复加锁造成死锁
@@ -245,7 +244,7 @@ func (c *Conn) SignIn(input *pb.Input) {
 	//@ms:add
 	c.LoginToken = signIn.Token //TODO
 
-	connManage.SetConn(signIn.DeviceId, c)
+	SetConn(signIn.DeviceId, c)
 }
 
 // Heartbeat 心跳
