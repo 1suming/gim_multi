@@ -2,7 +2,7 @@ package commonFunc
 
 import (
 	"context"
-	"gim/internal/logic/apisocket"
+	"gim/internal/logic/connManage"
 	"gim/pkg/grpclib"
 	"gim/pkg/logger"
 	"gim/pkg/protocol/pb"
@@ -15,7 +15,7 @@ func DeliverMessage(ctx context.Context, req *pb.DeliverMessageReq) (*emptypb.Em
 	resp := &emptypb.Empty{}
 	logger.Logger.Info("DeliverMessage func start", zap.Any("req", req))
 	//// 获取设备对应的TCP连接
-	conn := apisocket.GetConn(req.DeviceId)
+	conn := connManage.GetConn(req.DeviceId)
 	if conn == nil {
 		logger.Logger.Warn("GetConn warn", zap.Int64("device_id", req.DeviceId))
 		return resp, nil

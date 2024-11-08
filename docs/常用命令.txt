@@ -1,3 +1,15 @@
 
 生成proto
 protoc --go_out=../pb --go-grpc_out=../pb  ./*.proto
+
+
+ gim/cmd/logic
+        imports gim/internal/logic/api
+        imports gim/internal/logic/domain/message
+        imports gim/internal/logic/domain/message/service
+        imports gim/internal/logic/commonFunc
+        imports gim/internal/logic/apisocket
+        imports gim/internal/logic/domain/message: import cycle not allowed
+[root@localhost logic]#
+
+golang stack是从上到下看
