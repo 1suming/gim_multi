@@ -25,7 +25,7 @@ func (*app) Sync(ctx context.Context, userId, seq int64) (*pb.SyncResp, error) {
 	return service.MessageService.Sync(ctx, userId, seq)
 }
 func (*app) GetUserMessages(ctx context.Context, userId, seq int64, targetId int64, count int64) (*pb.GetUserMessagesResp, error) {
-	return service.MessageService.GetUserMessages(ctx, userId, seq, targetId)
+	return service.MessageService.GetUserMessages(ctx, userId, seq, targetId, count)
 }
 
 // MessageAck 收到消息回执

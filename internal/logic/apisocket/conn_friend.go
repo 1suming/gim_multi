@@ -109,7 +109,7 @@ func (c *Conn) Handle_GetUserMessages(input *pb.Input) {
 	//	Seq:      sync.Seq,
 	//}
 
-	resp, err := message.App.GetUserMessages(context.TODO(), req.OwnerUid, req.Seq, req.TargetId)
+	resp, err := message.App.GetUserMessages(context.TODO(), req.OwnerUid, req.Seq, req.TargetId, req.Count)
 
 	var message proto.Message
 	if err == nil {
