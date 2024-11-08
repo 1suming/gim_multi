@@ -51,12 +51,12 @@ func (d *messageRepo) ListBySeqAndTargetId(userId, seq, limit int64, targetId in
 	DB := db.DB.Table(d.tableName(userId)).
 		Where("user_id = ? and seq > ? and target_id=?", userId, seq, targetId)
 
-	var count int64
-	err := DB.Count(&count).Error
+	var totalCount int64
+	err := DB.Count(&totalCount).Error
 	if err != nil {
 		return nil, false, gerrors.WrapError(err)
 	}
-	if count == 0 {
+	if totalCount == 0 {
 		return nil, false, nil
 	}
 
@@ -65,5 +65,5 @@ func (d *messageRepo) ListBySeqAndTargetId(userId, seq, limit int64, targetId in
 	if err != nil {
 		return nil, false, gerrors.WrapError(err)
 	}
-	return messages, count > limit, nil
+	return messages, totalCount > limit, nil
 }

@@ -24,7 +24,7 @@ func (*app) PushAll(ctx context.Context, req *pb.PushAllReq) error {
 func (*app) Sync(ctx context.Context, userId, seq int64) (*pb.SyncResp, error) {
 	return service.MessageService.Sync(ctx, userId, seq)
 }
-func (*app) GetUserMessages(ctx context.Context, userId, seq int64, targetId int64) (*pb.GetUserMessagesResp, error) {
+func (*app) GetUserMessages(ctx context.Context, userId, seq int64, targetId int64, count int64) (*pb.GetUserMessagesResp, error) {
 	return service.MessageService.GetUserMessages(ctx, userId, seq, targetId)
 }
 

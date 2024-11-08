@@ -53,8 +53,8 @@ func (*messageService) Sync(ctx context.Context, userId, seq int64) (*pb.SyncRes
 }
 
 // Sync 消息同步
-func (*messageService) GetUserMessages(ctx context.Context, userId, seq int64, targetId int64) (*pb.GetUserMessagesResp, error) {
-	messages, hasMore, err := MessageService.ListByUserIdAndSeqAndTargetId(ctx, userId, seq, targetId)
+func (*messageService) GetUserMessages(ctx context.Context, userId, seq int64, targetId int64, count int64) (*pb.GetUserMessagesResp, error) {
+	messages, hasMore, err := MessageService.ListByUserIdAndSeqAndTargetId(ctx, userId, seq, targetId, count)
 	if err != nil {
 		return nil, err
 	}
@@ -92,7 +92,7 @@ func (*messageService) ListByUserIdAndSeq(ctx context.Context, userId, seq int64
 	return repo.MessageRepo.ListBySeq(userId, seq, MessageLimit)
 }
 
-func (*messageService) ListByUserIdAndSeqAndTargetId(ctx context.Context, userId, seq int64, targetId int64) ([]model.Message, bool, error) {
+func (*messageService) ListByUserIdAndSeqAndTargetId(ctx context.Context, userId, seq int64, targetId int64, count int64) ([]model.Message, bool, error) {
 	var err error
 	if seq == 0 {
 		seq, err = DeviceAckService.GetMaxByUserId(ctx, userId)
@@ -100,7 +100,9 @@ func (*messageService) ListByUserIdAndSeqAndTargetId(ctx context.Context, userId
 			return nil, false, err
 		}
 	}
-	return repo.MessageRepo.ListBySeqAndTargetId(userId, seq, MessageLimit, targetId)
+	//return repo.MessageRepo.ListBySeqAndTargetId(userId, seq, MessageLimit, targetId)
+
+	return repo.MessageRepo.ListBySeqAndTargetId(userId, seq, count, targetId)
 }
 
 /*
