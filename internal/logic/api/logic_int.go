@@ -3,7 +3,7 @@ package api
 import (
 	"context"
 	"gim/internal/logic/domain/device"
-	"gim/internal/logic/domain/room"
+	//"gim/internal/logic/domain/room"
 	"gim/internal/logic/proxy"
 	"gim/pkg/logger"
 	"gim/pkg/protocol/pb"
@@ -41,9 +41,9 @@ func (*LogicIntServer) Offline(ctx context.Context, req *pb.OfflineReq) (*emptyp
 	return &emptypb.Empty{}, device.App.Offline(ctx, req.DeviceId, req.ClientAddr)
 }
 
-func (s *LogicIntServer) SubscribeRoom(ctx context.Context, req *pb.SubscribeRoomReq) (*emptypb.Empty, error) {
-	return &emptypb.Empty{}, room.App.SubscribeRoom(ctx, req)
-}
+//func (s *LogicIntServer) SubscribeRoom(ctx context.Context, req *pb.SubscribeRoomReq) (*emptypb.Empty, error) {
+//	return &emptypb.Empty{}, room.App.SubscribeRoom(ctx, req)
+//}
 
 // Push 推送
 func (*LogicIntServer) Push(ctx context.Context, req *pb.PushReq) (*pb.PushResp, error) {
@@ -54,10 +54,10 @@ func (*LogicIntServer) Push(ctx context.Context, req *pb.PushReq) (*pb.PushResp,
 	return &pb.PushResp{Seq: seq}, nil
 }
 
-// PushRoom 推送房间
-func (s *LogicIntServer) PushRoom(ctx context.Context, req *pb.PushRoomReq) (*emptypb.Empty, error) {
-	return &emptypb.Empty{}, room.App.Push(ctx, req)
-}
+//// PushRoom 推送房间
+//func (s *LogicIntServer) PushRoom(ctx context.Context, req *pb.PushRoomReq) (*emptypb.Empty, error) {
+//	return &emptypb.Empty{}, room.App.Push(ctx, req)
+//}
 
 //
 //// PushAll 全服推送
