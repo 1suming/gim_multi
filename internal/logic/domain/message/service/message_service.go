@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"gim/internal/logic/apisocket"
 	"gim/internal/logic/domain/message/model"
 	"gim/internal/logic/domain/message/repo"
 	"gim/internal/logic/proxy"
@@ -20,7 +19,8 @@ const MessageLimit = 50 // 最大消息同步数量
 
 const MaxSyncBufLen = 65536 // 最大字节数组长度
 
-type messageService struct{}
+type messageService struct {
+}
 
 var MessageService = new(messageService)
 
@@ -185,7 +185,7 @@ func (m *messageService) SendToDevice(ctx context.Context, device *pb.Device, me
 	//	Message:  message,
 	//})
 
-	_, err := apisocket.DeliverMessage(picker.ContextWithAddr(ctx, device.ConnAddr), &pb.DeliverMessageReq{
+	_, err := proxy.DeliveMessageProxy.DeliverMessage(picker.ContextWithAddr(ctx, device.ConnAddr), &pb.DeliverMessageReq{
 		DeviceId: device.DeviceId,
 		Message:  message,
 	})

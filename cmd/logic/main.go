@@ -23,9 +23,13 @@ import (
 	"google.golang.org/grpc"
 )
 
+/*
+等所有被导入的包都加载完毕了，就会开始对main包中的包级常量和变量进行初始化，然后执行main包中的init函数（如果存在的话），最后执行main函数。下图详细地解释了整个执行过程：
+*/
 func init() {
 	proxy.MessageProxy = message.App
 	proxy.DeviceProxy = device.App
+	proxy.DeliveMessageProxy = apisocket.App
 }
 func setRouter(r *gin.Engine) {
 	v1 := r.Group("/im/")

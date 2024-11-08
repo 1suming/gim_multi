@@ -10,7 +10,12 @@ import (
 )
 
 // DeliverMessage 投递消息
-func DeliverMessage(ctx context.Context, req *pb.DeliverMessageReq) (*emptypb.Empty, error) {
+
+type app struct{}
+
+var App = new(app)
+
+func (*app) DeliverMessage(ctx context.Context, req *pb.DeliverMessageReq) (*emptypb.Empty, error) {
 	resp := &emptypb.Empty{}
 	logger.Logger.Info("DeliverMessage func start", zap.Any("req", req))
 	//// 获取设备对应的TCP连接
