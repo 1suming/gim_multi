@@ -28,6 +28,9 @@ func (m *Message) MessageToPB() *pb.Message {
 		SendTime: util.UnixMilliTime(m.SendTime),
 		Status:   pb.MessageStatus(m.Status),
 
+		TargetId: m.TargetId,
+		SenderId: m.SenderId,
+
 		//int64 from_user_id=6;//来自于用户id
 		//int64 to_user_id=7;//目标用户id
 		//
