@@ -9,8 +9,6 @@ import (
 	"gim/pkg/rpc"
 	"go.uber.org/zap"
 	"time"
-
-	"google.golang.org/protobuf/proto"
 )
 
 type service struct{}
@@ -156,12 +154,14 @@ func (*service) SendToFriend(ctx context.Context, fromDeviceID, fromUserID int64
 	}
 
 	// 发给发送者
-	push := pb.UserMessagePush{
-		Sender:     sender,
-		ReceiverId: req.ReceiverId,
-		Content:    req.Content,
-	}
-	bytes, err := proto.Marshal(&push)
+	//push := pb.UserMessagePush{
+	//	Sender:     sender,
+	//	ReceiverId: req.ReceiverId,
+	//	Content:    req.Content,
+	//}
+	//bytes, err := proto.Marshal(&push)
+
+	bytes := req.Content //content本来就是bytes
 	if err != nil {
 		return senderSeq, targetSeq, err
 	}
