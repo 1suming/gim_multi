@@ -1,8 +1,7 @@
-package api_handler
+package apisocket
 
 import (
 	"context"
-	"gim/internal/logic/apisocket"
 	recentContactService "gim/internal/logic/domain/recentcontact/service"
 	app2 "gim/internal/logic/domain/user/app"
 	"gim/pkg/dto"
@@ -33,7 +32,7 @@ import (
 //		c.Send(pb.PackageType_PT_SEARCH_USER, input.RequestId, resp, err)
 //
 // }
-func Handle_SearchUser(c *apisocket.Conn, input *pb.Input) error {
+func Handle_SearchUser(c *Conn, input *pb.Input) error {
 	logger.Logger.Info("Handle_SearchUser", zap.Any("input", input))
 	var req pb.SearchUserReq
 	err := proto.Unmarshal(input.Data, &req)
@@ -51,7 +50,7 @@ func Handle_SearchUser(c *apisocket.Conn, input *pb.Input) error {
 	return nil
 }
 
-func Handle_GetUser(c *apisocket.Conn, input *pb.Input) error {
+func Handle_GetUser(c *Conn, input *pb.Input) error {
 
 	var req pb.GetUserReq
 	logger.Logger.Info("GetUser", zap.Any("input", input))
@@ -72,7 +71,7 @@ func Handle_GetUser(c *apisocket.Conn, input *pb.Input) error {
 	c.Send(pb.PackageType_PT_GET_USER, input.RequestId, resp, err)
 	return nil
 }
-func Handle_GetUsers(c *apisocket.Conn, input *pb.Input) error {
+func Handle_GetUsers(c *Conn, input *pb.Input) error {
 
 	var req pb.GetUserIdsReq
 	logger.Logger.Info("GetUser", zap.Any("input", input))
@@ -89,7 +88,7 @@ func Handle_GetUsers(c *apisocket.Conn, input *pb.Input) error {
 	return nil
 }
 
-func Handle_UpdateUser(c *apisocket.Conn, input *pb.Input) error {
+func Handle_UpdateUser(c *Conn, input *pb.Input) error {
 	//userId, _, err := grpclib.GetCtxData(ctx)
 	//if err != nil {
 	//	return nil, err
@@ -109,7 +108,7 @@ func Handle_UpdateUser(c *apisocket.Conn, input *pb.Input) error {
 	c.Send(pb.PackageType_PT_UPDATE_USER, input.RequestId, resp, err)
 	return nil
 }
-func Handle_GetUserConversations(c *apisocket.Conn, input *pb.Input) error {
+func Handle_GetUserConversations(c *Conn, input *pb.Input) error {
 
 	var req pb.GetUserConversationsReq
 	err := proto.Unmarshal(input.Data, &req)

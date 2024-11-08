@@ -4,7 +4,6 @@ import (
 	"container/list"
 	"context"
 	"gim/config"
-	"gim/internal/logic/api_handler"
 	"gim/internal/logic/domain/device"
 	"gim/pkg/logger"
 	"gim/pkg/protocol/pb"
@@ -133,27 +132,27 @@ func (c *Conn) HandleMessage(bytes []byte) {
 	//	c.SubscribedRoom(input)
 	case pb.PackageType_PT_SEARCH_USER:
 
-		api_handler.Handle_SearchUser(c, input)
+		Handle_SearchUser(c, input)
 	case pb.PackageType_PT_GET_USER:
-		api_handler.Handle_GetUser(c, input)
+		Handle_GetUser(c, input)
 	case pb.PackageType_PT_GET_USERS:
-		api_handler.Handle_GetUsers(c, input)
+		Handle_GetUsers(c, input)
 	case pb.PackageType_PT_UPDATE_USER:
-		api_handler.Handle_UpdateUser(c, input)
+		Handle_UpdateUser(c, input)
 
 	case pb.PackageType_PT_FRIEND_ADD_FRIEND:
 
-		api_handler.Handle_AddFriend(c, input)
+		Handle_AddFriend(c, input)
 
 	case pb.PackageType_PT_FRIEND_SEND_MSG_TO_FRIEND:
-		api_handler.Handle_SendMessageToFriend(c, input)
+		Handle_SendMessageToFriend(c, input)
 
 		//会话列表
 	case pb.PackageType_PT_GET_USER_CONVERSATIONS:
-		api_handler.Handle_GetUserConversations(c, input)
+		Handle_GetUserConversations(c, input)
 
 	case pb.PackageType_PT_GET_USER_MESSAGES: //得到某个会话历史消息
-		api_handler.Handle_GetUserMessages(c, input)
+		Handle_GetUserMessages(c, input)
 	default:
 		logger.Logger.Error("handler switch other")
 	}

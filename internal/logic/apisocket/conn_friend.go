@@ -1,8 +1,7 @@
-package api_handler
+package apisocket
 
 import (
 	ctx "context"
-	"gim/internal/logic/apisocket"
 	"gim/internal/logic/domain/friend"
 	"gim/internal/logic/domain/message"
 	"gim/pkg/dto"
@@ -17,7 +16,7 @@ import (
 	recentContactService "gim/internal/logic/domain/recentcontact/service"
 )
 
-func Handle_AddFriend(c *apisocket.Conn, input *pb.Input) error {
+func Handle_AddFriend(c *Conn, input *pb.Input) error {
 	var req pb.AddFriendReq
 	err := proto.Unmarshal(input.Data, &req)
 	if err != nil {
@@ -53,7 +52,7 @@ func Handle_AddFriend(c *apisocket.Conn, input *pb.Input) error {
 }
 
 // SendMessageToFriend 发送好友消息
-func Handle_SendMessageToFriend(c *apisocket.Conn, input *pb.Input) error {
+func Handle_SendMessageToFriend(c *Conn, input *pb.Input) error {
 
 	var req pb.SendMessageReq
 	err := proto.Unmarshal(input.Data, &req)
@@ -90,7 +89,7 @@ func Handle_SendMessageToFriend(c *apisocket.Conn, input *pb.Input) error {
 	return nil
 }
 
-func Handle_GetUserMessages(c *apisocket.Conn, input *pb.Input) {
+func Handle_GetUserMessages(c *Conn, input *pb.Input) {
 	var req pb.GetUserMessagesReq
 	err := proto.Unmarshal(input.Data, &req)
 	if err != nil {
