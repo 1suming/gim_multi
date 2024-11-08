@@ -27,7 +27,7 @@ func (d *messageRepo) Save(message model.Message) error {
 // ListBySeq 根据类型和id查询大于序号大于seq的消息
 func (d *messageRepo) ListBySeq(userId, seq, limit int64) ([]model.Message, bool, error) {
 	DB := db.DB.Table(d.tableName(userId)).
-		Where("user_id = ? and seq > ?", userId, seq)
+		Where("user_id = ? and seq > ?", userId, seq).Order("seq ASC")
 
 	var count int64
 	err := DB.Count(&count).Error
@@ -49,7 +49,7 @@ func (d *messageRepo) ListBySeq(userId, seq, limit int64) ([]model.Message, bool
 // ListBySeq 根据类型和id查询大于序号大于seq的消息
 func (d *messageRepo) ListBySeqAndTargetId(userId, seq, limit int64, targetId int64) ([]model.Message, bool, error) {
 	DB := db.DB.Table(d.tableName(userId)).
-		Where("user_id = ? and seq > ? and target_id=?", userId, seq, targetId)
+		Where("user_id = ? and seq > ? and target_id=?", userId, seq, targetId).Order("seq ASC")
 
 	var totalCount int64
 	err := DB.Count(&totalCount).Error
