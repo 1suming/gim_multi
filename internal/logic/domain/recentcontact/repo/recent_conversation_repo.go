@@ -50,7 +50,7 @@ func (*SRecentConversationRepo) Update(conversation_type int8, userId int64, tar
 // ListBySeq 根据类型和id查询大于序号大于seq的消息
 func (r *SRecentConversationRepo) QueryAll(userId int64) ([]model.ImRecentConversation, error) {
 	DB := db.DB.Table(r.tableName()).
-		Where(" owner_uid = ?  ", userId)
+		Where(" owner_uid = ?  ", userId).Order("last_time desc")
 
 	//var count int64
 	//err := DB.Count(&count).Error

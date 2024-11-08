@@ -19,6 +19,11 @@ type SRecentConversationService struct{}
 
 var RecentConversationService = new(SRecentConversationService)
 
+const (
+	REDIS_KEY_CONVERSAION_UNREAD_TOTAL_CNT = "conversation_unread_T" //总未读
+	REDIS_KEY_CONVERSAION_UNREAD_CNT       = "conversation_unread_C" //会话未读
+)
+
 func (r *SRecentConversationService) SaveOrUpdate(ctx context.Context, dataDto *dto.SaveOrUpdateRecentContactDTO) error {
 
 	err := r._saveOrUpdateSingle(ctx, dataDto, dataDto.OwnerUid, dataDto.TargetId, dataDto.LastMessageId)
@@ -31,6 +36,7 @@ func (r *SRecentConversationService) SaveOrUpdate(ctx context.Context, dataDto *
 	}
 	sourceId := dataDto.TargetId //收件人
 	targetId := dataDto.OwnerUid
+
 	err = db.RedisUtil.GetRedisClient().HIncrBy(REDIS_KEY_CONVERSAION_UNREAD_CNT+"_"+strconv.FormatInt(sourceId, 10), strconv.FormatInt(targetId, 10), 1).Err()
 	if err != nil {
 		logger.Logger.Error("redis error", zap.Error(err))
@@ -46,9 +52,6 @@ func (r *SRecentConversationService) SaveOrUpdate(ctx context.Context, dataDto *
 	return err
 
 }
-
-const REDIS_KEY_CONVERSAION_UNREAD_TOTAL_CNT = "conversation_unread_T" //总未读
-const REDIS_KEY_CONVERSAION_UNREAD_CNT = "conversation_unread_C"       //会话未读
 
 func (r *SRecentConversationService) _saveOrUpdateSingle(ctx context.Context, dataDto *dto.SaveOrUpdateRecentContactDTO, sourceId int64, targetId int64, lastMessageId int64) error {
 	var recentConversationModel *model.ImRecentConversation
@@ -121,6 +124,7 @@ func (r *SRecentConversationService) GetUserRecentConversations(ctx context.Cont
 			// 如果返回的错误是key不存在
 			if errors.Is(err, redis.Nil) {
 				logger.Logger.Info("redis is nil", zap.Error(err))
+				conversationSingle.UnreadCnt = 0
 			} else {
 				return gerrors.WrapError(err)
 			}
