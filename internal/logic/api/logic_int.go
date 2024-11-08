@@ -3,7 +3,6 @@ package api
 import (
 	"context"
 	"gim/internal/logic/domain/device"
-	"gim/internal/logic/domain/message"
 	"gim/internal/logic/domain/room"
 	"gim/internal/logic/proxy"
 	"gim/pkg/logger"
@@ -26,15 +25,16 @@ func (*LogicIntServer) ConnSignIn(ctx context.Context, req *pb.ConnSignInReq) (*
 		device.App.SignIn(ctx, req.UserId, req.DeviceId, req.Token, req.ConnAddr, req.ClientAddr)
 }
 
-// Sync 设备同步消息
-func (*LogicIntServer) Sync(ctx context.Context, req *pb.SyncReq) (*pb.SyncResp, error) {
-	return message.App.Sync(ctx, req.UserId, req.Seq)
-}
+//// Sync 设备同步消息
+//func (*LogicIntServer) Sync(ctx context.Context, req *pb.SyncReq) (*pb.SyncResp, error) {
+//	return message.App.Sync(ctx, req.UserId, req.Seq)
+//}
 
-// MessageACK 设备收到消息ack
-func (*LogicIntServer) MessageACK(ctx context.Context, req *pb.MessageACKReq) (*emptypb.Empty, error) {
-	return &emptypb.Empty{}, message.App.MessageAck(ctx, req.UserId, req.DeviceId, req.DeviceAck)
-}
+//
+//// MessageACK 设备收到消息ack
+//func (*LogicIntServer) MessageACK(ctx context.Context, req *pb.MessageACKReq) (*emptypb.Empty, error) {
+//	return &emptypb.Empty{}, message.App.MessageAck(ctx, req.UserId, req.DeviceId, req.DeviceAck)
+//}
 
 // Offline 设备离线
 func (*LogicIntServer) Offline(ctx context.Context, req *pb.OfflineReq) (*emptypb.Empty, error) {
@@ -59,10 +59,11 @@ func (s *LogicIntServer) PushRoom(ctx context.Context, req *pb.PushRoomReq) (*em
 	return &emptypb.Empty{}, room.App.Push(ctx, req)
 }
 
-// PushAll 全服推送
-func (s *LogicIntServer) PushAll(ctx context.Context, req *pb.PushAllReq) (*emptypb.Empty, error) {
-	return &emptypb.Empty{}, message.App.PushAll(ctx, req)
-}
+//
+//// PushAll 全服推送
+//func (s *LogicIntServer) PushAll(ctx context.Context, req *pb.PushAllReq) (*emptypb.Empty, error) {
+//	return &emptypb.Empty{}, message.App.PushAll(ctx, req)
+//}
 
 // GetDevice 获取设备信息
 func (*LogicIntServer) GetDevice(ctx context.Context, req *pb.GetDeviceReq) (*pb.GetDeviceResp, error) {
