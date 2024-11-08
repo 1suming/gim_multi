@@ -5,7 +5,6 @@ import (
 	"gim/internal/logic/domain/device"
 	"gim/internal/logic/domain/friend"
 	"gim/internal/logic/domain/group"
-	"gim/internal/logic/domain/room"
 	"gim/pkg/grpclib"
 	"gim/pkg/protocol/pb"
 
@@ -22,10 +21,10 @@ func (*LogicExtServer) RegisterDevice(ctx context.Context, in *pb.RegisterDevice
 	return &pb.RegisterDeviceResp{DeviceId: deviceId}, err
 }
 
-// PushRoom  推送房间
-func (s *LogicExtServer) PushRoom(ctx context.Context, req *pb.PushRoomReq) (*emptypb.Empty, error) {
-	return &emptypb.Empty{}, room.App.Push(ctx, req)
-}
+//// PushRoom  推送房间
+//func (s *LogicExtServer) PushRoom(ctx context.Context, req *pb.PushRoomReq) (*emptypb.Empty, error) {
+//	return &emptypb.Empty{}, room.App.Push(ctx, req)
+//}
 
 // SendMessageToFriend 发送好友消息
 func (*LogicExtServer) SendMessageToFriend(ctx context.Context, in *pb.SendMessageReq) (*pb.SendMessageResp, error) {
