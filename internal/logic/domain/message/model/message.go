@@ -17,6 +17,7 @@ type Message struct {
 	SendTime  time.Time // 消息发送时间
 	Status    int32     // 创建时间
 	TargetId  int64     //对方Id //@ms;
+	SenderId  int64     //发送者id
 }
 
 func (m *Message) MessageToPB() *pb.Message {
@@ -26,6 +27,12 @@ func (m *Message) MessageToPB() *pb.Message {
 		Seq:      m.Seq,
 		SendTime: util.UnixMilliTime(m.SendTime),
 		Status:   pb.MessageStatus(m.Status),
+
+		//int64 from_user_id=6;//来自于用户id
+		//int64 to_user_id=7;//目标用户id
+		//
+		//MessageConversationType conversation_type=8;//会话类型
+		//
 	}
 }
 

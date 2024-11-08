@@ -17,3 +17,4 @@ CREATE TABLE im_recent_conversation (
         PRIMARY KEY (`conversation_type`,`owner_uid`,target_id)
 );
 alter table message add column target_id  bigint  NOT NULL default 0 comment '目标对象id';
+alter table message add  column sender_id bigint  NOT NULL default 0 comment '消息发送者';

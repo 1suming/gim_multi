@@ -123,12 +123,12 @@ func (*messageService) SendToUser(ctx context.Context, fromDeviceID, toUserID in
 		err error
 	)
 	var targetId int64 //另一方ID
-	if message.FromUserId == toUserID {
+	if message.SenderId == toUserID {
 		//是发送给自己
-		targetId = message.ToUserId
+		targetId = message.TargetId
 
 	} else {
-		targetId = message.FromUserId
+		targetId = message.SenderId
 	}
 
 	if isPersist {
@@ -148,6 +148,7 @@ func (*messageService) SendToUser(ctx context.Context, fromDeviceID, toUserID in
 			Status:    int32(pb.MessageStatus_MS_NORMAL),
 
 			TargetId: targetId, //@ms:
+			SenderId: message.SenderId,
 		}
 		err = repo.MessageRepo.Save(selfMessage)
 		if err != nil {

@@ -19,8 +19,8 @@ message Message {
   MessageStatus status = 5; // 消息状态
 
 
-  int64 from_user_id=6;//来自于用户id
-  int64 to_user_id=7;//目标用户id
+  int64 target_id=6;//目标用户id
+  int64 sender_id=7;//来自于用户id
 
   MessageConversationType conversation_type=8;//会话类型
 }
