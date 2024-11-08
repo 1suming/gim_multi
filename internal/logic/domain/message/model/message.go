@@ -16,6 +16,7 @@ type Message struct {
 	Seq       int64     // 消息同步序列
 	SendTime  time.Time // 消息发送时间
 	Status    int32     // 创建时间
+	TargetId  int64     //对方Id //@ms;
 }
 
 func (m *Message) MessageToPB() *pb.Message {

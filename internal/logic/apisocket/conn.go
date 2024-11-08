@@ -150,6 +150,9 @@ func (c *Conn) HandleMessage(bytes []byte) {
 		//会话列表
 	case pb.PackageType_PT_GET_USER_CONVERSATIONS:
 		c.Handle_GetUserConversations(input)
+
+	case pb.PackageType_PT_GET_USER_MESSAGES: //得到某个会话历史消息
+		c.Handle_GetUserMessages(input)
 	default:
 		logger.Logger.Error("handler switch other")
 	}

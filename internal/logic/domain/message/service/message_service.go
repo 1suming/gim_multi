@@ -52,6 +52,34 @@ func (*messageService) Sync(ctx context.Context, userId, seq int64) (*pb.SyncRes
 	return resp, nil
 }
 
+// Sync 消息同步
+func (*messageService) GetUserMessages(ctx context.Context, userId, seq int64, targetId int64) (*pb.GetUserMessagesResp, error) {
+	messages, hasMore, err := MessageService.ListByUserIdAndSeqAndTargetId(ctx, userId, seq, targetId)
+	if err != nil {
+		return nil, err
+	}
+	pbMessages := model.MessagesToPB(messages)
+	length := len(pbMessages)
+
+	resp := &pb.GetUserMessagesResp{Messages: pbMessages, HasMore: hasMore}
+	bytes, err := proto.Marshal(resp)
+	if err != nil {
+		return nil, err
+	}
+
+	// 如果字节数组大于一个包的长度，需要减少字节数组
+	for len(bytes) > MaxSyncBufLen {
+		length = length * 2 / 3
+		resp = &pb.GetUserMessagesResp{Messages: pbMessages[0:length], HasMore: true}
+		bytes, err = proto.Marshal(resp)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return resp, nil
+}
+
 // ListByUserIdAndSeq 查询消息
 func (*messageService) ListByUserIdAndSeq(ctx context.Context, userId, seq int64) ([]model.Message, bool, error) {
 	var err error
@@ -64,6 +92,25 @@ func (*messageService) ListByUserIdAndSeq(ctx context.Context, userId, seq int64
 	return repo.MessageRepo.ListBySeq(userId, seq, MessageLimit)
 }
 
+func (*messageService) ListByUserIdAndSeqAndTargetId(ctx context.Context, userId, seq int64, targetId int64) ([]model.Message, bool, error) {
+	var err error
+	if seq == 0 {
+		seq, err = DeviceAckService.GetMaxByUserId(ctx, userId)
+		if err != nil {
+			return nil, false, err
+		}
+	}
+	return repo.MessageRepo.ListBySeqAndTargetId(userId, seq, MessageLimit, targetId)
+}
+
+/*
+sendToUser 会调用2次，一次是发给自己，一个是发给target
+seq, err := proxy.MessageProxy.SendToUser(ctx, fromDeviceID, fromUserID, msg, true)
+
+// 发给接收者
+targetSeq, err = proxy.MessageProxy.SendToUser(ctx, fromDeviceID, req.ReceiverId, msg, true)
+
+*/
 // SendToUser 将消息发送给用户
 func (*messageService) SendToUser(ctx context.Context, fromDeviceID, toUserID int64, message *pb.Message, isPersist bool) (int64, error) {
 	logger.Logger.Debug("SendToUser",
@@ -73,6 +120,14 @@ func (*messageService) SendToUser(ctx context.Context, fromDeviceID, toUserID in
 		seq int64 = 0
 		err error
 	)
+	var targetId int64 //另一方ID
+	if message.FromUserId == toUserID {
+		//是发送给自己
+		targetId = message.ToUserId
+
+	} else {
+		targetId = message.FromUserId
+	}
 
 	if isPersist {
 		seq, err = SeqService.GetUserNext(ctx, toUserID)
@@ -89,6 +144,8 @@ func (*messageService) SendToUser(ctx context.Context, fromDeviceID, toUserID in
 			Seq:       seq,
 			SendTime:  util.UnunixMilliTime(message.SendTime),
 			Status:    int32(pb.MessageStatus_MS_NORMAL),
+
+			TargetId: targetId, //@ms:
 		}
 		err = repo.MessageRepo.Save(selfMessage)
 		if err != nil {

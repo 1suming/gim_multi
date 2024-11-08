@@ -45,3 +45,25 @@ func (d *messageRepo) ListBySeq(userId, seq, limit int64) ([]model.Message, bool
 	}
 	return messages, count > limit, nil
 }
+
+// ListBySeq 根据类型和id查询大于序号大于seq的消息
+func (d *messageRepo) ListBySeqAndTargetId(userId, seq, limit int64, targetId int64) ([]model.Message, bool, error) {
+	DB := db.DB.Table(d.tableName(userId)).
+		Where("user_id = ? and seq > ? and target_id=?", userId, seq, targetId)
+
+	var count int64
+	err := DB.Count(&count).Error
+	if err != nil {
+		return nil, false, gerrors.WrapError(err)
+	}
+	if count == 0 {
+		return nil, false, nil
+	}
+
+	var messages []model.Message
+	err = DB.Limit(limit).Find(&messages).Error
+	if err != nil {
+		return nil, false, gerrors.WrapError(err)
+	}
+	return messages, count > limit, nil
+}
