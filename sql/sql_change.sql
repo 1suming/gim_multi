@@ -19,6 +19,7 @@ CREATE TABLE im_recent_conversation (
 alter table message add column target_id  bigint  NOT NULL default 0 comment '目标对象id';
 alter table message add  column sender_id bigint  NOT NULL default 0 comment '消息发送者';
 
+alter table message add  column str_content varchar(1024)   NOT NULL default ''  AFTER content;
 
 CREATE TABLE `chatroom`
 (

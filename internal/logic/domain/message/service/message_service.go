@@ -147,8 +147,9 @@ func (*messageService) SendToUser(ctx context.Context, fromDeviceID, toUserID in
 			SendTime:  util.UnunixMilliTime(message.SendTime),
 			Status:    int32(pb.MessageStatus_MS_NORMAL),
 
-			TargetId: targetId, //@ms:
-			SenderId: message.SenderId,
+			TargetId:   targetId, //@ms:
+			SenderId:   message.SenderId,
+			StrContent: string(message.Content),
 		}
 		err = repo.MessageRepo.Save(selfMessage)
 		if err != nil {

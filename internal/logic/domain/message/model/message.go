@@ -8,16 +8,17 @@ import (
 
 // Message 消息
 type Message struct {
-	Id        int64     // 自增主键
-	UserId    int64     // 所属类型id
-	RequestId int64     // 请求id
-	Code      int32     // 推送码
-	Content   []byte    // 推送内容
-	Seq       int64     // 消息同步序列
-	SendTime  time.Time // 消息发送时间
-	Status    int32     // 创建时间
-	TargetId  int64     //对方Id //@ms;
-	SenderId  int64     //发送者id
+	Id         int64     // 自增主键
+	UserId     int64     // 所属类型id
+	RequestId  int64     // 请求id
+	Code       int32     // 推送码
+	Content    []byte    // 推送内容
+	Seq        int64     // 消息同步序列
+	SendTime   time.Time // 消息发送时间
+	Status     int32     // 创建时间
+	TargetId   int64     //对方Id //@ms;
+	SenderId   int64     //发送者id
+	StrContent string    //消息内容string格式
 }
 
 func (m *Message) MessageToPB() *pb.Message {
