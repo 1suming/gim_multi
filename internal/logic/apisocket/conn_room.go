@@ -6,7 +6,6 @@ import (
 	"gim/internal/logic/domain/room"
 	"gim/pkg/logger"
 	"gim/pkg/protocol/pb"
-	"gim/pkg/rpc"
 	"go.uber.org/zap"
 	"google.golang.org/protobuf/proto"
 )
@@ -37,15 +36,52 @@ func Handle_SubscribedRoom(c *Conn, input *pb.Input) {
 	}
 
 	SubscribedRoom(c, subscribeRoom.RoomId)
-	c.Send(pb.PackageType_PT_SUBSCRIBE_ROOM, input.RequestId, nil, nil)
-	_, err = rpc.GetLogicIntClient().SubscribeRoom(context.TODO(), &pb.SubscribeRoomReq{
+	//c.Send(pb.PackageType_PT_SUBSCRIBE_ROOM, input.RequestId, nil, nil)
+	c.Send(pb.PackageType_PT_ROOM_JOIN_ROOM, input.RequestId, nil, nil)
+
+	//_, err = rpc.GetLogicIntClient().SubscribeRoom(context.TODO(), &pb.SubscribeRoomReq{
+	//	UserId:   c.UserId,
+	//	DeviceId: c.DeviceId,
+	//	RoomId:   subscribeRoom.RoomId,
+	//	Seq:      subscribeRoom.Seq,
+	//	ConnAddr: config.Config.ConnectLocalAddr,
+	//})
+	req := &pb.SubscribeRoomReq{
 		UserId:   c.UserId,
 		DeviceId: c.DeviceId,
 		RoomId:   subscribeRoom.RoomId,
 		Seq:      subscribeRoom.Seq,
 		ConnAddr: config.Config.ConnectLocalAddr,
-	})
+	}
+
+	room.App.SubscribeRoom(context.TODO(), req)
+
 	if err != nil {
 		logger.Logger.Error("SubscribedRoom error", zap.Error(err))
 	}
+}
+func Handle_GetRoomList(c *Conn, input *pb.Input) error {
+	var req pb.GetRoomListReq
+	err := proto.Unmarshal(input.Data, &req)
+	if err != nil {
+		logger.Logger.Error("Handle_GetRoomList", zap.Error(err))
+		c.Send(pb.PackageType_PT_ROOM_GET_ROOM_LIST, input.RequestId, nil, err)
+		return err
+	}
+	logger.Logger.Info(" Handle_GetRoomList", zap.Any("req", req))
+
+	deviceId, userId := c.DeviceId, c.UserId
+	_ = deviceId
+	pbRooms, err := room.App.GetChatRoomList(context.TODO(), userId) // ([]*pb.ChatRoom, error) {
+	if err != nil {
+		logger.Logger.Error("Handle_GetRoomList", zap.Error(err))
+		c.Send(pb.PackageType_PT_ROOM_GET_ROOM_LIST, input.RequestId, nil, err)
+		return err
+	}
+	resp := &pb.GetRoomListResp{
+		Rooms: pbRooms,
+	}
+
+	c.Send(pb.PackageType_PT_ROOM_GET_ROOM_LIST, input.RequestId, resp, err)
+	return nil
 }

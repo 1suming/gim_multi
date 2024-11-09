@@ -1,0 +1,43 @@
+syntax = "proto3";
+package pb;
+option go_package = "gim/pkg/protocol/pb";
+
+//import "message.ext.proto";
+
+message RoomCreateRoomReq {
+  string name = 1; // 名称
+  string avatar_url = 2; // 头像
+  string introduction = 3; // 简介
+  string extra = 4; // 附加字段
+}
+message RoomCreateRoomResp {
+  int64 room_id = 1; // 群组id
+}
+
+
+message ChatRoom {
+  int64 chatroom_id = 1; // 群组id
+  string name = 2; // 名称
+  string avatar_url = 3; // 头像
+  string introduction = 4; // 简介
+  int32 max_user_mum = 5; // 用户数
+  string extra = 6; // 附加字段
+  int64 create_time = 7; // 创建时间
+  int64 update_time = 8; // 更新时间
+}
+
+message GetChatRoomsResp {
+  repeated ChatRoom rooms = 1;
+}
+
+
+
+//roomo
+// 消息同步请求,package_type:2
+message GetRoomListReq {
+
+}
+// 消息同步响应,package_type:2
+message GetRoomListResp {
+  repeated ChatRoom rooms = 1; // 消息列表
+}

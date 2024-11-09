@@ -2,6 +2,7 @@ package room
 
 import (
 	"context"
+	"gim/internal/logic/domain/room/repo"
 	"gim/internal/logic/proxy"
 	"gim/pkg/gerrors"
 	"gim/pkg/grpclib/picker"
@@ -19,7 +20,7 @@ type service struct{}
 var Service = new(service)
 
 func (s *service) Push(ctx context.Context, req *pb.PushRoomReq) error {
-	seq, err := SeqRepo.GetNextSeq(req.RoomId)
+	seq, err := repo.SeqRepo.GetNextSeq(req.RoomId)
 	if err != nil {
 		return err
 	}
@@ -90,7 +91,7 @@ func (s *service) SendRoomMessage(ctx context.Context, fromDeviceID, fromUserID 
 }
 
 func (s *service) AddMessage(roomId int64, msg *pb.Message) error {
-	err := MessageRepo.Add(roomId, msg)
+	err := repo.MessageRepo.Add(roomId, msg)
 	if err != nil {
 		return err
 	}
@@ -107,7 +108,7 @@ func (s *service) DelExpireMessage(roomId int64) error {
 	)
 
 	for {
-		msgs, err := MessageRepo.ListByIndex(roomId, index, index+20)
+		msgs, err := repo.MessageRepo.ListByIndex(roomId, index, index+20)
 		if err != nil {
 			return err
 		}
@@ -116,7 +117,7 @@ func (s *service) DelExpireMessage(roomId int64) error {
 		}
 
 		for _, v := range msgs {
-			if v.SendTime > util.UnixMilliTime(time.Now().Add(-MessageExpireTime)) {
+			if v.SendTime > util.UnixMilliTime(time.Now().Add(-repo.MessageExpireTime)) {
 				stop = true
 				break
 			}
@@ -131,7 +132,7 @@ func (s *service) DelExpireMessage(roomId int64) error {
 		}
 	}
 
-	return MessageRepo.DelBySeq(roomId, min, max)
+	return repo.MessageRepo.DelBySeq(roomId, min, max)
 }
 
 // SubscribeRoom 订阅房间
@@ -140,7 +141,7 @@ func (s *service) SubscribeRoom(ctx context.Context, req *pb.SubscribeRoomReq) e
 		return nil
 	}
 
-	messages, err := MessageRepo.List(req.RoomId, req.Seq)
+	messages, err := repo.MessageRepo.List(req.RoomId, req.Seq)
 	if err != nil {
 		return err
 	}

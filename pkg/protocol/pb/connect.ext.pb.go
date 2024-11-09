@@ -850,111 +850,6 @@ func (x *GetUserMessagesResp) GetHasMore() bool {
 	return false
 }
 
-//roomo
-// 消息同步请求,package_type:2
-type GetRoomListReq struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Seq int64 `protobuf:"varint,1,opt,name=seq,proto3" json:"seq,omitempty"` // 客户端已经同步的序列号
-}
-
-func (x *GetRoomListReq) Reset() {
-	*x = GetRoomListReq{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_connect_ext_proto_msgTypes[13]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *GetRoomListReq) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*GetRoomListReq) ProtoMessage() {}
-
-func (x *GetRoomListReq) ProtoReflect() protoreflect.Message {
-	mi := &file_connect_ext_proto_msgTypes[13]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use GetRoomListReq.ProtoReflect.Descriptor instead.
-func (*GetRoomListReq) Descriptor() ([]byte, []int) {
-	return file_connect_ext_proto_rawDescGZIP(), []int{13}
-}
-
-func (x *GetRoomListReq) GetSeq() int64 {
-	if x != nil {
-		return x.Seq
-	}
-	return 0
-}
-
-// 消息同步响应,package_type:2
-type GetRoomListResp struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Messages []*Message `protobuf:"bytes,1,rep,name=messages,proto3" json:"messages,omitempty"`               // 消息列表
-	HasMore  bool       `protobuf:"varint,2,opt,name=has_more,json=hasMore,proto3" json:"has_more,omitempty"` // 是否有更多数据
-}
-
-func (x *GetRoomListResp) Reset() {
-	*x = GetRoomListResp{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_connect_ext_proto_msgTypes[14]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *GetRoomListResp) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*GetRoomListResp) ProtoMessage() {}
-
-func (x *GetRoomListResp) ProtoReflect() protoreflect.Message {
-	mi := &file_connect_ext_proto_msgTypes[14]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use GetRoomListResp.ProtoReflect.Descriptor instead.
-func (*GetRoomListResp) Descriptor() ([]byte, []int) {
-	return file_connect_ext_proto_rawDescGZIP(), []int{14}
-}
-
-func (x *GetRoomListResp) GetMessages() []*Message {
-	if x != nil {
-		return x.Messages
-	}
-	return nil
-}
-
-func (x *GetRoomListResp) GetHasMore() bool {
-	if x != nil {
-		return x.HasMore
-	}
-	return false
-}
-
 var File_connect_ext_proto protoreflect.FileDescriptor
 
 var file_connect_ext_proto_rawDesc = []byte{
@@ -1049,16 +944,9 @@ var file_connect_ext_proto_rawDesc = []byte{
 	0x0b, 0x32, 0x0b, 0x2e, 0x70, 0x62, 0x2e, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x52, 0x08,
 	0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x73, 0x12, 0x19, 0x0a, 0x08, 0x68, 0x61, 0x73, 0x5f,
 	0x6d, 0x6f, 0x72, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x08, 0x52, 0x07, 0x68, 0x61, 0x73, 0x4d,
-	0x6f, 0x72, 0x65, 0x22, 0x22, 0x0a, 0x0e, 0x47, 0x65, 0x74, 0x52, 0x6f, 0x6f, 0x6d, 0x4c, 0x69,
-	0x73, 0x74, 0x52, 0x65, 0x71, 0x12, 0x10, 0x0a, 0x03, 0x73, 0x65, 0x71, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x03, 0x52, 0x03, 0x73, 0x65, 0x71, 0x22, 0x55, 0x0a, 0x0f, 0x47, 0x65, 0x74, 0x52, 0x6f,
-	0x6f, 0x6d, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x12, 0x27, 0x0a, 0x08, 0x6d, 0x65,
-	0x73, 0x73, 0x61, 0x67, 0x65, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0b, 0x2e, 0x70,
-	0x62, 0x2e, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x52, 0x08, 0x6d, 0x65, 0x73, 0x73, 0x61,
-	0x67, 0x65, 0x73, 0x12, 0x19, 0x0a, 0x08, 0x68, 0x61, 0x73, 0x5f, 0x6d, 0x6f, 0x72, 0x65, 0x18,
-	0x02, 0x20, 0x01, 0x28, 0x08, 0x52, 0x07, 0x68, 0x61, 0x73, 0x4d, 0x6f, 0x72, 0x65, 0x42, 0x15,
-	0x5a, 0x13, 0x67, 0x69, 0x6d, 0x2f, 0x70, 0x6b, 0x67, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63,
-	0x6f, 0x6c, 0x2f, 0x70, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x6f, 0x72, 0x65, 0x42, 0x15, 0x5a, 0x13, 0x67, 0x69, 0x6d, 0x2f, 0x70, 0x6b, 0x67, 0x2f, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x63, 0x6f, 0x6c, 0x2f, 0x70, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x33,
 }
 
 var (
@@ -1073,7 +961,7 @@ func file_connect_ext_proto_rawDescGZIP() []byte {
 	return file_connect_ext_proto_rawDescData
 }
 
-var file_connect_ext_proto_msgTypes = make([]protoimpl.MessageInfo, 15)
+var file_connect_ext_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
 var file_connect_ext_proto_goTypes = []interface{}{
 	(*Input)(nil),                        // 0: pb.Input
 	(*RouterMsgInput)(nil),               // 1: pb.RouterMsgInput
@@ -1088,24 +976,21 @@ var file_connect_ext_proto_goTypes = []interface{}{
 	(*GetUserConversationsResp)(nil),     // 10: pb.GetUserConversationsResp
 	(*GetUserMessagesReq)(nil),           // 11: pb.GetUserMessagesReq
 	(*GetUserMessagesResp)(nil),          // 12: pb.GetUserMessagesResp
-	(*GetRoomListReq)(nil),               // 13: pb.GetRoomListReq
-	(*GetRoomListResp)(nil),              // 14: pb.GetRoomListResp
-	(PackageType)(0),                     // 15: pb.PackageType
-	(*Message)(nil),                      // 16: pb.Message
+	(PackageType)(0),                     // 13: pb.PackageType
+	(*Message)(nil),                      // 14: pb.Message
 }
 var file_connect_ext_proto_depIdxs = []int32{
-	15, // 0: pb.Input.type:type_name -> pb.PackageType
+	13, // 0: pb.Input.type:type_name -> pb.PackageType
 	0,  // 1: pb.RouterMsgInput.originInput:type_name -> pb.Input
-	15, // 2: pb.Output.type:type_name -> pb.PackageType
-	16, // 3: pb.SyncOutput.messages:type_name -> pb.Message
+	13, // 2: pb.Output.type:type_name -> pb.PackageType
+	14, // 3: pb.SyncOutput.messages:type_name -> pb.Message
 	9,  // 4: pb.GetUserConversationsResp.conversations:type_name -> pb.UserRecentConversationSingle
-	16, // 5: pb.GetUserMessagesResp.messages:type_name -> pb.Message
-	16, // 6: pb.GetRoomListResp.messages:type_name -> pb.Message
-	7,  // [7:7] is the sub-list for method output_type
-	7,  // [7:7] is the sub-list for method input_type
-	7,  // [7:7] is the sub-list for extension type_name
-	7,  // [7:7] is the sub-list for extension extendee
-	0,  // [0:7] is the sub-list for field type_name
+	14, // 5: pb.GetUserMessagesResp.messages:type_name -> pb.Message
+	6,  // [6:6] is the sub-list for method output_type
+	6,  // [6:6] is the sub-list for method input_type
+	6,  // [6:6] is the sub-list for extension type_name
+	6,  // [6:6] is the sub-list for extension extendee
+	0,  // [0:6] is the sub-list for field type_name
 }
 
 func init() { file_connect_ext_proto_init() }
@@ -1271,30 +1156,6 @@ func file_connect_ext_proto_init() {
 				return nil
 			}
 		}
-		file_connect_ext_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetRoomListReq); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_connect_ext_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetRoomListResp); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -1302,7 +1163,7 @@ func file_connect_ext_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_connect_ext_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   15,
+			NumMessages:   13,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

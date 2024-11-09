@@ -2,6 +2,7 @@ package room
 
 import (
 	"fmt"
+	"gim/internal/logic/domain/room/repo"
 	"gim/pkg/protocol/pb"
 	"gim/pkg/util"
 	"testing"
@@ -14,7 +15,7 @@ func Test_service_DelExpireMessage(t *testing.T) {
 }
 
 func Test_service_List(t *testing.T) {
-	msgs, err := MessageRepo.List(1, 1)
+	msgs, err := repo.MessageRepo.List(1, 1)
 	fmt.Println(err)
 	fmt.Println(msgs)
 }

@@ -111,14 +111,3 @@ message GetUserMessagesResp {
   repeated Message messages = 1; // 消息列表
   bool has_more = 2; // 是否有更多数据
 }
-
-//roomo
-// 消息同步请求,package_type:2
-message GetRoomListReq {
-  int64 seq = 1; // 客户端已经同步的序列号
-}
-// 消息同步响应,package_type:2
-message GetRoomListResp {
-  repeated Message messages = 1; // 消息列表
-  bool has_more = 2; // 是否有更多数据
-}

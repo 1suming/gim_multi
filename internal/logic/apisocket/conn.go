@@ -131,8 +131,11 @@ func (c *Conn) HandleMessage(bytes []byte) {
 	//	MessageACK(input)
 	case pb.PackageType_PT_MESSAGE_ACK: //消息回执
 		Handle_MessageACK(c, input)
-	case pb.PackageType_PT_SUBSCRIBE_ROOM:
-		Handle_SubscribedRoom(c, input)
+	//case pb.PackageType_PT_SUBSCRIBE_ROOM:
+	//	Handle_SubscribedRoom(c, input)
+	//
+
+
 
 	case pb.PackageType_PT_SEARCH_USER:
 
@@ -157,6 +160,17 @@ func (c *Conn) HandleMessage(bytes []byte) {
 
 	case pb.PackageType_PT_GET_USER_MESSAGES: //得到某个会话历史消息
 		Handle_GetUserMessages(c, input)
+
+	case.PackageType_PT_ROOM_GET_ROOM_LIST: //chatroom
+		Handle_GetRoomList(c,input)
+		//PT_ROOM_GET_ROOM_LIST = 40001;//room列表
+		//PT_ROOM_CREATE_ROOM =40002;//创建room
+		//PT_ROOM_DELETE_ROOM =40003;//解散room
+		//PT_ROOM_JOIN_ROOM = 40004;//加入room
+
+	case  pb.PackageType_PT_ROOM_JOIN_ROOM:// pb.PackageType_PT_SUBSCRIBE_ROOM:
+		Handle_SubscribedRoom(c, input)
+
 	default:
 		logger.Logger.Error("handler switch other")
 	}
