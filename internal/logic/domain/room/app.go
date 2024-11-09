@@ -24,7 +24,7 @@ func (s *app) SubscribeRoom(ctx context.Context, req *pb.SubscribeRoomReq) error
 // SendMessage 发送群组消息
 func (s *app) SendRoomMessage(ctx context.Context, fromDeviceID, fromUserID int64, req *pb.SendMessageReq) error {
 
-	return service.SendRoomMessage(ctx, fromDeviceID, fromUserID, req)
+	return Service.SendRoomMessage(ctx, fromDeviceID, fromUserID, req)
 }
 
 func (*app) GetChatRoomList(ctx context.Context, userId int64) ([]*pb.ChatRoom, error) {
