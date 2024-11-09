@@ -2,12 +2,48 @@ syntax = "proto3";
 package pb;
 option go_package = "gim/pkg/protocol/pb";
 
-enum MessageConversationType {
-    DEFAQULT = 0;
-    FRIEND = 1;//到个人
-    GROUP=2;//群主
-    ROOM=3;//房间
+enum PackageType {
+  PT_UNKNOWN = 0; // 未知
+  PT_SIGN_IN = 1; // 设备登录请求
+  PT_SYNC = 2; // 消息同步触发
+  PT_HEARTBEAT = 3; // 心跳
+  PT_MESSAGE = 4; // 消息投递
+  PT_SUBSCRIBE_ROOM = 5; // 订阅房间
+
+  //@ms:add
+  PT_SEARCH_USER = 10001;//搜索用户
+  PT_GET_USER=10002;
+  PT_GET_USERS=10003;
+  PT_UPDATE_USER=1004;
+
+  PT_FRIEND_ADD_FRIEND=10010;//添加好友
+  PT_SEND_MESSAGE=10011;//给
+
+  PT_GET_USER_CONVERSATIONS =20001;//用户会话
+  PT_GET_USER_MESSAGES=20002;//得到某个会话消息
+
+  PT_MESSAGE_ACK = 30001;//消息回执
+
+  PT_ROOM_GET_ROOM_LIST = 40001;//room列表
+  PT_ROOM_CREATE_ROOM =40002;//创建room
+  PT_ROOM_DELETE_ROOM =40003;//解散room
+  PT_ROOM_JOIN_ROOM = 40004;//加入room
+
 }
+enum ChatType {
+  DEFAULT=0;
+  SINGLE_CHAT = 1;
+  GROUP_CHAT = 2;
+  CHAT_ROOM = 3; //    // 会话类型：单聊、群聊和聊天室分别为 `singleChat`、`groupChat` 和 `chatRoom`，默认为单聊。
+
+}
+
+//enum MessageConversationType {
+//    DEFAQULT = 0;
+//    FRIEND = 1;//到个人
+//    GROUP=2;//群主
+//    ROOM=3;//房间
+//}
 
 
 // 单条消息投递内容（估算大约100个字节）,todo 通知栏提醒
@@ -22,7 +58,7 @@ message Message {
   int64 target_id=6;//目标用户id
   int64 sender_id=7;//来自于用户id
 
-  MessageConversationType conversation_type=8;//会话类型
+  ChatType conversation_type=8;//会话类型
 }
 
 enum MessageStatus {

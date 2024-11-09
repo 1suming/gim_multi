@@ -30,6 +30,7 @@ func init() {
 	proxy.MessageProxy = message.App
 	proxy.DeviceProxy = device.App
 	proxy.DeliveMessageProxy = apisocket.App
+	proxy.RoomDeliveMessageProxy = apisocket.RoomApp
 }
 func setRouter(r *gin.Engine) {
 	v1 := r.Group("/im/")

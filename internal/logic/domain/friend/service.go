@@ -148,11 +148,11 @@ func (*service) AgreeAddFriend(ctx context.Context, userId, friendId int64, rema
 func (*service) SendToFriend(ctx context.Context, fromDeviceID, fromUserID int64, req *pb.SendMessageReq) (int64, int64, error) {
 	senderSeq := int64(0)
 	targetSeq := int64(0)
-	sender, err := rpc.GetSender(fromDeviceID, fromUserID)
-	if err != nil {
-		return senderSeq, targetSeq, err
-	}
-
+	//sender, err := rpc.GetSender(fromDeviceID, fromUserID)
+	//if err != nil {
+	//	return senderSeq, targetSeq, err
+	//}
+	//_ = sender
 	// 发给发送者
 	//push := pb.UserMessagePush{
 	//	Sender:     sender,
@@ -162,9 +162,9 @@ func (*service) SendToFriend(ctx context.Context, fromDeviceID, fromUserID int64
 	//bytes, err := proto.Marshal(&push)
 
 	bytes := req.Content //content本来就是bytes
-	if err != nil {
-		return senderSeq, targetSeq, err
-	}
+	//if err != nil {
+	//	return senderSeq, targetSeq, err
+	//}
 
 	msg := &pb.Message{
 		Code:     int32(pb.PushCode_PC_USER_MESSAGE),
@@ -173,7 +173,7 @@ func (*service) SendToFriend(ctx context.Context, fromDeviceID, fromUserID int64
 
 		SenderId:         fromUserID,     //来自于用户id
 		TargetId:         req.ReceiverId, //目标用户id
-		ConversationType: pb.MessageConversationType_FRIEND,
+		ConversationType: pb.ChatType_SINGLE_CHAT,
 	}
 	logger.Logger.Info("SendToFriend", zap.Any("自身------开始", fromUserID))
 

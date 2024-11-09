@@ -5,6 +5,7 @@ import (
 	"context"
 	"gim/config"
 	"gim/internal/logic/domain/device"
+	"gim/internal/logic/domain/message"
 	"gim/pkg/logger"
 	"gim/pkg/protocol/pb"
 	"sync"
@@ -127,9 +128,12 @@ func (c *Conn) HandleMessage(bytes []byte) {
 	case pb.PackageType_PT_HEARTBEAT:
 		c.Heartbeat(input)
 	//case pb.PackageType_PT_MESSAGE:
-	//	c.MessageACK(input)
-	//case pb.PackageType_PT_SUBSCRIBE_ROOM:
-	//	c.SubscribedRoom(input)
+	//	MessageACK(input)
+	case pb.PackageType_PT_MESSAGE_ACK: //消息回执
+		Handle_MessageACK(c, input)
+	case pb.PackageType_PT_SUBSCRIBE_ROOM:
+		Handle_SubscribedRoom(c, input)
+
 	case pb.PackageType_PT_SEARCH_USER:
 
 		Handle_SearchUser(c, input)
@@ -144,8 +148,8 @@ func (c *Conn) HandleMessage(bytes []byte) {
 
 		Handle_AddFriend(c, input)
 
-	case pb.PackageType_PT_FRIEND_SEND_MSG_TO_FRIEND:
-		Handle_SendMessageToFriend(c, input)
+	case pb.PackageType_PT_SEND_MESSAGE:
+		Handle_SendMessage(c, input)
 
 		//会话列表
 	case pb.PackageType_PT_GET_USER_CONVERSATIONS:
@@ -156,6 +160,25 @@ func (c *Conn) HandleMessage(bytes []byte) {
 	default:
 		logger.Logger.Error("handler switch other")
 	}
+}
+func Handle_SendMessage(c *Conn, input *pb.Input) error {
+
+	var req pb.SendMessageReq
+	err := proto.Unmarshal(input.Data, &req)
+	if err != nil {
+		logger.Logger.Error("Handle_SendMessageToFriend", zap.Error(err))
+		return err
+	}
+	//会话类型：单聊、群聊和聊天室分别为 `singleChat`、`groupChat` 和 `chatRoom`，默认为单聊。
+	if req.ChatType == pb.ChatType_SINGLE_CHAT {
+		Handle_SendMessageToFriend(c, input)
+	} else if req.ChatType == pb.ChatType_GROUP_CHAT {
+		//
+	} else if req.ChatType == pb.ChatType_CHAT_ROOM {
+		Handle_SendMsgToRoom(c, input)
+	}
+
+	return nil
 }
 
 // Send 下发消息
@@ -251,4 +274,29 @@ func (c *Conn) Heartbeat(input *pb.Input) {
 	c.Send(pb.PackageType_PT_HEARTBEAT, input.RequestId, nil, nil)
 
 	logger.Sugar.Infow("heartbeat", "device_id", c.DeviceId, "user_id", c.UserId)
+}
+
+// MessageACK 消息收到回执
+func Handle_MessageACK(c *Conn, input *pb.Input) {
+	var messageACK pb.MessageACK
+	err := proto.Unmarshal(input.Data, &messageACK)
+	if err != nil {
+		logger.Sugar.Error(err)
+		return
+	}
+
+	//_, _ = rpc.GetLogicIntClient().MessageACK(grpclib.ContextWithRequestId(context.TODO(), input.RequestId), &pb.MessageACKReq{
+	//	UserId:      c.UserId,
+	//	DeviceId:    c.DeviceId,
+	//	DeviceAck:   messageACK.DeviceAck,
+	//	ReceiveTime: messageACK.ReceiveTime,
+	//})
+	userId, deviceId := c.UserId, c.DeviceId
+
+	err = message.App.MessageAck(context.TODO(), userId, deviceId, messageACK.DeviceAck)
+	if err != nil {
+		logger.Logger.Info("handle", zap.Any("err", err))
+	}
+	return
+
 }

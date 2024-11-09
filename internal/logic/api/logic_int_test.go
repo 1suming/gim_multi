@@ -79,6 +79,7 @@ func TestLogicIntServer_Offline(t *testing.T) {
 	logger.Sugar.Info(resp)
 }
 
+// 推送room 消息
 func TestLogicIntServer_PushRoom(t *testing.T) {
 	resp, err := getLogicIntClient().PushRoom(getCtx(),
 		&pb.PushRoomReq{

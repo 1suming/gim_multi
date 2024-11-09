@@ -20,89 +20,6 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type PackageType int32
-
-const (
-	PackageType_PT_UNKNOWN        PackageType = 0 // 未知
-	PackageType_PT_SIGN_IN        PackageType = 1 // 设备登录请求
-	PackageType_PT_SYNC           PackageType = 2 // 消息同步触发
-	PackageType_PT_HEARTBEAT      PackageType = 3 // 心跳
-	PackageType_PT_MESSAGE        PackageType = 4 // 消息投递
-	PackageType_PT_SUBSCRIBE_ROOM PackageType = 5 // 订阅房间
-	//@ms:add
-	PackageType_PT_SEARCH_USER               PackageType = 10001 //搜索用户
-	PackageType_PT_GET_USER                  PackageType = 10002
-	PackageType_PT_GET_USERS                 PackageType = 10003
-	PackageType_PT_UPDATE_USER               PackageType = 1004
-	PackageType_PT_FRIEND_ADD_FRIEND         PackageType = 10010 //添加好友
-	PackageType_PT_FRIEND_SEND_MSG_TO_FRIEND PackageType = 10011 //给
-	PackageType_PT_GET_USER_CONVERSATIONS    PackageType = 20001 //用户会话
-	PackageType_PT_GET_USER_MESSAGES         PackageType = 20002 //得到某个会话消息
-)
-
-// Enum value maps for PackageType.
-var (
-	PackageType_name = map[int32]string{
-		0:     "PT_UNKNOWN",
-		1:     "PT_SIGN_IN",
-		2:     "PT_SYNC",
-		3:     "PT_HEARTBEAT",
-		4:     "PT_MESSAGE",
-		5:     "PT_SUBSCRIBE_ROOM",
-		10001: "PT_SEARCH_USER",
-		10002: "PT_GET_USER",
-		10003: "PT_GET_USERS",
-		1004:  "PT_UPDATE_USER",
-		10010: "PT_FRIEND_ADD_FRIEND",
-		10011: "PT_FRIEND_SEND_MSG_TO_FRIEND",
-		20001: "PT_GET_USER_CONVERSATIONS",
-		20002: "PT_GET_USER_MESSAGES",
-	}
-	PackageType_value = map[string]int32{
-		"PT_UNKNOWN":                   0,
-		"PT_SIGN_IN":                   1,
-		"PT_SYNC":                      2,
-		"PT_HEARTBEAT":                 3,
-		"PT_MESSAGE":                   4,
-		"PT_SUBSCRIBE_ROOM":            5,
-		"PT_SEARCH_USER":               10001,
-		"PT_GET_USER":                  10002,
-		"PT_GET_USERS":                 10003,
-		"PT_UPDATE_USER":               1004,
-		"PT_FRIEND_ADD_FRIEND":         10010,
-		"PT_FRIEND_SEND_MSG_TO_FRIEND": 10011,
-		"PT_GET_USER_CONVERSATIONS":    20001,
-		"PT_GET_USER_MESSAGES":         20002,
-	}
-)
-
-func (x PackageType) Enum() *PackageType {
-	p := new(PackageType)
-	*p = x
-	return p
-}
-
-func (x PackageType) String() string {
-	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
-}
-
-func (PackageType) Descriptor() protoreflect.EnumDescriptor {
-	return file_connect_ext_proto_enumTypes[0].Descriptor()
-}
-
-func (PackageType) Type() protoreflect.EnumType {
-	return &file_connect_ext_proto_enumTypes[0]
-}
-
-func (x PackageType) Number() protoreflect.EnumNumber {
-	return protoreflect.EnumNumber(x)
-}
-
-// Deprecated: Use PackageType.Descriptor instead.
-func (PackageType) EnumDescriptor() ([]byte, []int) {
-	return file_connect_ext_proto_rawDescGZIP(), []int{0}
-}
-
 // 上行数据
 type Input struct {
 	state         protoimpl.MessageState
@@ -933,6 +850,111 @@ func (x *GetUserMessagesResp) GetHasMore() bool {
 	return false
 }
 
+//roomo
+// 消息同步请求,package_type:2
+type GetRoomListReq struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Seq int64 `protobuf:"varint,1,opt,name=seq,proto3" json:"seq,omitempty"` // 客户端已经同步的序列号
+}
+
+func (x *GetRoomListReq) Reset() {
+	*x = GetRoomListReq{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_connect_ext_proto_msgTypes[13]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetRoomListReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetRoomListReq) ProtoMessage() {}
+
+func (x *GetRoomListReq) ProtoReflect() protoreflect.Message {
+	mi := &file_connect_ext_proto_msgTypes[13]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetRoomListReq.ProtoReflect.Descriptor instead.
+func (*GetRoomListReq) Descriptor() ([]byte, []int) {
+	return file_connect_ext_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *GetRoomListReq) GetSeq() int64 {
+	if x != nil {
+		return x.Seq
+	}
+	return 0
+}
+
+// 消息同步响应,package_type:2
+type GetRoomListResp struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Messages []*Message `protobuf:"bytes,1,rep,name=messages,proto3" json:"messages,omitempty"`               // 消息列表
+	HasMore  bool       `protobuf:"varint,2,opt,name=has_more,json=hasMore,proto3" json:"has_more,omitempty"` // 是否有更多数据
+}
+
+func (x *GetRoomListResp) Reset() {
+	*x = GetRoomListResp{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_connect_ext_proto_msgTypes[14]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetRoomListResp) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetRoomListResp) ProtoMessage() {}
+
+func (x *GetRoomListResp) ProtoReflect() protoreflect.Message {
+	mi := &file_connect_ext_proto_msgTypes[14]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetRoomListResp.ProtoReflect.Descriptor instead.
+func (*GetRoomListResp) Descriptor() ([]byte, []int) {
+	return file_connect_ext_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *GetRoomListResp) GetMessages() []*Message {
+	if x != nil {
+		return x.Messages
+	}
+	return nil
+}
+
+func (x *GetRoomListResp) GetHasMore() bool {
+	if x != nil {
+		return x.HasMore
+	}
+	return false
+}
+
 var File_connect_ext_proto protoreflect.FileDescriptor
 
 var file_connect_ext_proto_rawDesc = []byte{
@@ -1027,29 +1049,16 @@ var file_connect_ext_proto_rawDesc = []byte{
 	0x0b, 0x32, 0x0b, 0x2e, 0x70, 0x62, 0x2e, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x52, 0x08,
 	0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x73, 0x12, 0x19, 0x0a, 0x08, 0x68, 0x61, 0x73, 0x5f,
 	0x6d, 0x6f, 0x72, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x08, 0x52, 0x07, 0x68, 0x61, 0x73, 0x4d,
-	0x6f, 0x72, 0x65, 0x2a, 0xbd, 0x02, 0x0a, 0x0b, 0x50, 0x61, 0x63, 0x6b, 0x61, 0x67, 0x65, 0x54,
-	0x79, 0x70, 0x65, 0x12, 0x0e, 0x0a, 0x0a, 0x50, 0x54, 0x5f, 0x55, 0x4e, 0x4b, 0x4e, 0x4f, 0x57,
-	0x4e, 0x10, 0x00, 0x12, 0x0e, 0x0a, 0x0a, 0x50, 0x54, 0x5f, 0x53, 0x49, 0x47, 0x4e, 0x5f, 0x49,
-	0x4e, 0x10, 0x01, 0x12, 0x0b, 0x0a, 0x07, 0x50, 0x54, 0x5f, 0x53, 0x59, 0x4e, 0x43, 0x10, 0x02,
-	0x12, 0x10, 0x0a, 0x0c, 0x50, 0x54, 0x5f, 0x48, 0x45, 0x41, 0x52, 0x54, 0x42, 0x45, 0x41, 0x54,
-	0x10, 0x03, 0x12, 0x0e, 0x0a, 0x0a, 0x50, 0x54, 0x5f, 0x4d, 0x45, 0x53, 0x53, 0x41, 0x47, 0x45,
-	0x10, 0x04, 0x12, 0x15, 0x0a, 0x11, 0x50, 0x54, 0x5f, 0x53, 0x55, 0x42, 0x53, 0x43, 0x52, 0x49,
-	0x42, 0x45, 0x5f, 0x52, 0x4f, 0x4f, 0x4d, 0x10, 0x05, 0x12, 0x13, 0x0a, 0x0e, 0x50, 0x54, 0x5f,
-	0x53, 0x45, 0x41, 0x52, 0x43, 0x48, 0x5f, 0x55, 0x53, 0x45, 0x52, 0x10, 0x91, 0x4e, 0x12, 0x10,
-	0x0a, 0x0b, 0x50, 0x54, 0x5f, 0x47, 0x45, 0x54, 0x5f, 0x55, 0x53, 0x45, 0x52, 0x10, 0x92, 0x4e,
-	0x12, 0x11, 0x0a, 0x0c, 0x50, 0x54, 0x5f, 0x47, 0x45, 0x54, 0x5f, 0x55, 0x53, 0x45, 0x52, 0x53,
-	0x10, 0x93, 0x4e, 0x12, 0x13, 0x0a, 0x0e, 0x50, 0x54, 0x5f, 0x55, 0x50, 0x44, 0x41, 0x54, 0x45,
-	0x5f, 0x55, 0x53, 0x45, 0x52, 0x10, 0xec, 0x07, 0x12, 0x19, 0x0a, 0x14, 0x50, 0x54, 0x5f, 0x46,
-	0x52, 0x49, 0x45, 0x4e, 0x44, 0x5f, 0x41, 0x44, 0x44, 0x5f, 0x46, 0x52, 0x49, 0x45, 0x4e, 0x44,
-	0x10, 0x9a, 0x4e, 0x12, 0x21, 0x0a, 0x1c, 0x50, 0x54, 0x5f, 0x46, 0x52, 0x49, 0x45, 0x4e, 0x44,
-	0x5f, 0x53, 0x45, 0x4e, 0x44, 0x5f, 0x4d, 0x53, 0x47, 0x5f, 0x54, 0x4f, 0x5f, 0x46, 0x52, 0x49,
-	0x45, 0x4e, 0x44, 0x10, 0x9b, 0x4e, 0x12, 0x1f, 0x0a, 0x19, 0x50, 0x54, 0x5f, 0x47, 0x45, 0x54,
-	0x5f, 0x55, 0x53, 0x45, 0x52, 0x5f, 0x43, 0x4f, 0x4e, 0x56, 0x45, 0x52, 0x53, 0x41, 0x54, 0x49,
-	0x4f, 0x4e, 0x53, 0x10, 0xa1, 0x9c, 0x01, 0x12, 0x1a, 0x0a, 0x14, 0x50, 0x54, 0x5f, 0x47, 0x45,
-	0x54, 0x5f, 0x55, 0x53, 0x45, 0x52, 0x5f, 0x4d, 0x45, 0x53, 0x53, 0x41, 0x47, 0x45, 0x53, 0x10,
-	0xa2, 0x9c, 0x01, 0x42, 0x15, 0x5a, 0x13, 0x67, 0x69, 0x6d, 0x2f, 0x70, 0x6b, 0x67, 0x2f, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x63, 0x6f, 0x6c, 0x2f, 0x70, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x33,
+	0x6f, 0x72, 0x65, 0x22, 0x22, 0x0a, 0x0e, 0x47, 0x65, 0x74, 0x52, 0x6f, 0x6f, 0x6d, 0x4c, 0x69,
+	0x73, 0x74, 0x52, 0x65, 0x71, 0x12, 0x10, 0x0a, 0x03, 0x73, 0x65, 0x71, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x03, 0x52, 0x03, 0x73, 0x65, 0x71, 0x22, 0x55, 0x0a, 0x0f, 0x47, 0x65, 0x74, 0x52, 0x6f,
+	0x6f, 0x6d, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x12, 0x27, 0x0a, 0x08, 0x6d, 0x65,
+	0x73, 0x73, 0x61, 0x67, 0x65, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0b, 0x2e, 0x70,
+	0x62, 0x2e, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x52, 0x08, 0x6d, 0x65, 0x73, 0x73, 0x61,
+	0x67, 0x65, 0x73, 0x12, 0x19, 0x0a, 0x08, 0x68, 0x61, 0x73, 0x5f, 0x6d, 0x6f, 0x72, 0x65, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x08, 0x52, 0x07, 0x68, 0x61, 0x73, 0x4d, 0x6f, 0x72, 0x65, 0x42, 0x15,
+	0x5a, 0x13, 0x67, 0x69, 0x6d, 0x2f, 0x70, 0x6b, 0x67, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x63,
+	0x6f, 0x6c, 0x2f, 0x70, 0x62, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -1064,37 +1073,39 @@ func file_connect_ext_proto_rawDescGZIP() []byte {
 	return file_connect_ext_proto_rawDescData
 }
 
-var file_connect_ext_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_connect_ext_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
+var file_connect_ext_proto_msgTypes = make([]protoimpl.MessageInfo, 15)
 var file_connect_ext_proto_goTypes = []interface{}{
-	(PackageType)(0),                     // 0: pb.PackageType
-	(*Input)(nil),                        // 1: pb.Input
-	(*RouterMsgInput)(nil),               // 2: pb.RouterMsgInput
-	(*Output)(nil),                       // 3: pb.Output
-	(*SignInInput)(nil),                  // 4: pb.SignInInput
-	(*SyncInput)(nil),                    // 5: pb.SyncInput
-	(*SyncOutput)(nil),                   // 6: pb.SyncOutput
-	(*SubscribeRoomInput)(nil),           // 7: pb.SubscribeRoomInput
-	(*MessageACK)(nil),                   // 8: pb.MessageACK
-	(*GetUserConversationsReq)(nil),      // 9: pb.GetUserConversationsReq
-	(*UserRecentConversationSingle)(nil), // 10: pb.UserRecentConversationSingle
-	(*GetUserConversationsResp)(nil),     // 11: pb.GetUserConversationsResp
-	(*GetUserMessagesReq)(nil),           // 12: pb.GetUserMessagesReq
-	(*GetUserMessagesResp)(nil),          // 13: pb.GetUserMessagesResp
-	(*Message)(nil),                      // 14: pb.Message
+	(*Input)(nil),                        // 0: pb.Input
+	(*RouterMsgInput)(nil),               // 1: pb.RouterMsgInput
+	(*Output)(nil),                       // 2: pb.Output
+	(*SignInInput)(nil),                  // 3: pb.SignInInput
+	(*SyncInput)(nil),                    // 4: pb.SyncInput
+	(*SyncOutput)(nil),                   // 5: pb.SyncOutput
+	(*SubscribeRoomInput)(nil),           // 6: pb.SubscribeRoomInput
+	(*MessageACK)(nil),                   // 7: pb.MessageACK
+	(*GetUserConversationsReq)(nil),      // 8: pb.GetUserConversationsReq
+	(*UserRecentConversationSingle)(nil), // 9: pb.UserRecentConversationSingle
+	(*GetUserConversationsResp)(nil),     // 10: pb.GetUserConversationsResp
+	(*GetUserMessagesReq)(nil),           // 11: pb.GetUserMessagesReq
+	(*GetUserMessagesResp)(nil),          // 12: pb.GetUserMessagesResp
+	(*GetRoomListReq)(nil),               // 13: pb.GetRoomListReq
+	(*GetRoomListResp)(nil),              // 14: pb.GetRoomListResp
+	(PackageType)(0),                     // 15: pb.PackageType
+	(*Message)(nil),                      // 16: pb.Message
 }
 var file_connect_ext_proto_depIdxs = []int32{
-	0,  // 0: pb.Input.type:type_name -> pb.PackageType
-	1,  // 1: pb.RouterMsgInput.originInput:type_name -> pb.Input
-	0,  // 2: pb.Output.type:type_name -> pb.PackageType
-	14, // 3: pb.SyncOutput.messages:type_name -> pb.Message
-	10, // 4: pb.GetUserConversationsResp.conversations:type_name -> pb.UserRecentConversationSingle
-	14, // 5: pb.GetUserMessagesResp.messages:type_name -> pb.Message
-	6,  // [6:6] is the sub-list for method output_type
-	6,  // [6:6] is the sub-list for method input_type
-	6,  // [6:6] is the sub-list for extension type_name
-	6,  // [6:6] is the sub-list for extension extendee
-	0,  // [0:6] is the sub-list for field type_name
+	15, // 0: pb.Input.type:type_name -> pb.PackageType
+	0,  // 1: pb.RouterMsgInput.originInput:type_name -> pb.Input
+	15, // 2: pb.Output.type:type_name -> pb.PackageType
+	16, // 3: pb.SyncOutput.messages:type_name -> pb.Message
+	9,  // 4: pb.GetUserConversationsResp.conversations:type_name -> pb.UserRecentConversationSingle
+	16, // 5: pb.GetUserMessagesResp.messages:type_name -> pb.Message
+	16, // 6: pb.GetRoomListResp.messages:type_name -> pb.Message
+	7,  // [7:7] is the sub-list for method output_type
+	7,  // [7:7] is the sub-list for method input_type
+	7,  // [7:7] is the sub-list for extension type_name
+	7,  // [7:7] is the sub-list for extension extendee
+	0,  // [0:7] is the sub-list for field type_name
 }
 
 func init() { file_connect_ext_proto_init() }
@@ -1260,20 +1271,43 @@ func file_connect_ext_proto_init() {
 				return nil
 			}
 		}
+		file_connect_ext_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetRoomListReq); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_connect_ext_proto_msgTypes[14].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetRoomListResp); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_connect_ext_proto_rawDesc,
-			NumEnums:      1,
-			NumMessages:   13,
+			NumEnums:      0,
+			NumMessages:   15,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
 		GoTypes:           file_connect_ext_proto_goTypes,
 		DependencyIndexes: file_connect_ext_proto_depIdxs,
-		EnumInfos:         file_connect_ext_proto_enumTypes,
 		MessageInfos:      file_connect_ext_proto_msgTypes,
 	}.Build()
 	File_connect_ext_proto = out.File

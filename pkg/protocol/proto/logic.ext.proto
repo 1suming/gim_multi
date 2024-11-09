@@ -3,6 +3,7 @@ package pb;
 option go_package = "gim/pkg/protocol/pb";
 
 import "google/protobuf/empty.proto";
+import "message.ext.proto";
 
 service LogicExt {
   // 注册设备
@@ -43,6 +44,8 @@ service LogicExt {
   rpc GetGroupMembers (GetGroupMembersReq) returns (GetGroupMembersResp);
 }
 
+
+
 message RegisterDeviceReq {
   int32 type = 2; // 设备类型
   string brand = 3; // 厂商
@@ -55,14 +58,30 @@ message RegisterDeviceResp {
   int64 device_id = 1; // 设备id
 }
 
+//message SendMessageReq {
+//  int64 receiver_id = 1; // 接收者ID，用户ID/群组ID
+//  bytes content = 2; // 推动内容
+//  int64 send_time = 3; // 消息发送时间戳，精确到毫秒
+//}
+//message SendMessageResp {
+//  int64 seq = 1; // 消息序列号
+//}
+
 message SendMessageReq {
-  int64 receiver_id = 1; // 接收者ID，用户ID/群组ID
-  bytes content = 2; // 推动内容
-  int64 send_time = 3; // 消息发送时间戳，精确到毫秒
+  ChatType  chat_type=1;     // 会话类型：单聊、群聊和聊天室分别为 `singleChat`、`groupChat` 和 `chatRoom`，默认为单聊。
+  int64 receiver_id = 2; // 接收者ID，用户ID/群组ID     // 消息接收方：单聊为对方用户 ID，群聊和聊天室分别为群组 ID 和聊天室 ID。
+
+  bytes content = 3; // 推动内容
+  int64 send_time =4; // 消息发送时间戳，精确到毫秒
 }
 message SendMessageResp {
+//  ChatType chat_type=1;     // 会话类型：单聊、群聊和聊天室分别为 `singleChat`、`groupChat` 和 `chatRoom`，默认为单聊。
+//  int64 receiver_id = 2; // 接收者ID，用户ID/群组ID     // 消息接收方：单聊为对方用户 ID，群聊和聊天室分别为群组 ID 和聊天室 ID。
+
+
   int64 seq = 1; // 消息序列号
 }
+
 
 message PushRoomReq{
   int64 room_id = 1; // 房间id

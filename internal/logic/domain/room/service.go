@@ -56,6 +56,39 @@ func (s *service) Push(ctx context.Context, req *pb.PushRoomReq) error {
 	return nil
 }
 
+// SendMessage 消息发送至群组
+// @ms:
+func (s *service) SendRoomMessage(ctx context.Context, fromDeviceID, fromUserID int64, req *pb.SendMessageReq) error {
+
+	//sender, err := rpc.GetSender(fromDeviceID, fromUserID)
+	//if err != nil {
+	//	return err
+	//}
+	//
+	//push := pb.UserMessagePush{
+	//	Sender:     sender,
+	//	ReceiverId: req.ReceiverId,
+	//	Content:    req.Content,
+	//}
+	//bytes, err := proto.Marshal(&push)
+	//if err != nil {
+	//	return err
+	//}
+	bytes := req.Content
+	msg := &pb.Message{
+		Code:     int32(pb.PushCode_PC_GROUP_MESSAGE),
+		Content:  bytes,
+		SendTime: req.SendTime,
+
+		SenderId:         fromUserID,     //来自于用户id
+		TargetId:         req.ReceiverId, //目标用户id
+		ConversationType: pb.ChatType_CHAT_ROOM,
+	}
+	roomId := req.ReceiverId
+	proxy.RoomDeliveMessageProxy.PushRoomMsg(roomId, msg)
+	return nil
+}
+
 func (s *service) AddMessage(roomId int64, msg *pb.Message) error {
 	err := MessageRepo.Add(roomId, msg)
 	if err != nil {

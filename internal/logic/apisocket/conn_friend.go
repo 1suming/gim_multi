@@ -58,7 +58,7 @@ func Handle_SendMessageToFriend(c *Conn, input *pb.Input) error {
 	err := proto.Unmarshal(input.Data, &req)
 	if err != nil {
 		logger.Logger.Error("Handle_SendMessageToFriend", zap.Error(err))
-		c.Send(pb.PackageType_PT_FRIEND_SEND_MSG_TO_FRIEND, input.RequestId, nil, err)
+		c.Send(pb.PackageType_PT_SEND_MESSAGE, input.RequestId, nil, err)
 		return err
 	}
 	logger.Logger.Info(" Handle_SendMessageToFriend", zap.Any("req", req))
@@ -71,7 +71,7 @@ func Handle_SendMessageToFriend(c *Conn, input *pb.Input) error {
 
 	sendTime := util.GetNowTime()
 	saveOrUpdateRecentContactDTO := dto.SaveOrUpdateRecentContactDTO{
-		ConversationType:   int8(pb.MessageConversationType_FRIEND),
+		ConversationType:   int8(pb.ChatType_SINGLE_CHAT),
 		LastMessageContent: string(req.Content),
 		LastMessageId:      seq,
 		TargetId:           req.ReceiverId,
@@ -82,10 +82,10 @@ func Handle_SendMessageToFriend(c *Conn, input *pb.Input) error {
 	err = recentContactService.RecentConversationService.SaveOrUpdate(context.TODO(), &saveOrUpdateRecentContactDTO)
 	if err != nil {
 		logger.Logger.Error("Handle_SendMessageToFriend", zap.Error(err))
-		c.Send(pb.PackageType_PT_FRIEND_SEND_MSG_TO_FRIEND, input.RequestId, nil, err)
+		c.Send(pb.PackageType_PT_SEND_MESSAGE, input.RequestId, nil, err)
 		return err
 	}
-	c.Send(pb.PackageType_PT_FRIEND_SEND_MSG_TO_FRIEND, input.RequestId, resp, err)
+	c.Send(pb.PackageType_PT_SEND_MESSAGE, input.RequestId, resp, err)
 	return nil
 }
 
