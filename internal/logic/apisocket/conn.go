@@ -71,9 +71,9 @@ func (c *Conn) Close() error {
 	}
 
 	//// 取消订阅，需要异步出去，防止重复加锁造成死锁
-	//go func() {
-	//	SubscribedRoom(c, 0)
-	//}()
+	go func() {
+		UnSubscribedRoom(c)
+	}()
 
 	if c.DeviceId != 0 {
 		//_, _ = rpc.GetLogicIntClient().Offline(context.TODO(), &pb.OfflineReq{

@@ -31,7 +31,7 @@ func SubscribedRoom(conn *Conn, roomId int64) {
 		if room.Conns.Front() == nil {
 			RoomsManager.Delete(oldRoomId)
 		}
-		return
+		//@ms:这里必须要return return
 	}
 
 	// 订阅
@@ -46,6 +46,24 @@ func SubscribedRoom(conn *Conn, roomId int64) {
 		}
 		room.Subscribe(conn)
 		return
+	}
+}
+func UnSubscribedRoom(conn *Conn) {
+
+	oldRoomId := conn.RoomId
+	// 取消订阅
+	if oldRoomId != 0 {
+		value, ok := RoomsManager.Load(oldRoomId)
+		if !ok {
+			return
+		}
+		room := value.(*Room)
+		room.Unsubscribe(conn)
+
+		if room.Conns.Front() == nil {
+			RoomsManager.Delete(oldRoomId)
+		}
+		//@ms:这里必须要return return
 	}
 }
 

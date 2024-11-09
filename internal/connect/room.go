@@ -27,7 +27,7 @@ func SubscribedRoom(conn *Conn, roomId int64) {
 		if room.Conns.Front() == nil {
 			RoomsManager.Delete(oldRoomId)
 		}
-		return
+		//@ms:这里必须要return return
 	}
 
 	// 订阅
