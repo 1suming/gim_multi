@@ -17,6 +17,11 @@ type ChatRoom struct {
 	UpdateTime   time.Time // 更新时间
 }
 
+// TableName 表名称
+func (*ChatRoom) TableName() string {
+	return "chatroom"
+}
+
 func (g *ChatRoom) ToProto() *pb.ChatRoom {
 	if g == nil {
 		return nil
