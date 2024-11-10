@@ -125,7 +125,8 @@ func (s *service) AddMessage(roomId int64, msg *pb.Message) error {
 	if err != nil {
 		return err
 	}
-	return s.DelExpireMessage(roomId)
+	//@ms:不要删除过期的消息 return s.DelExpireMessage(roomId)
+	return nil
 }
 
 // DelExpireMessage 删除过期消息
