@@ -10,6 +10,7 @@ import (
 	"gim/pkg/mq"
 	"gim/pkg/protocol/pb"
 	"gim/pkg/util"
+	"go.uber.org/zap"
 	"time"
 
 	"google.golang.org/protobuf/proto"
@@ -60,6 +61,45 @@ func (s *service) Push(ctx context.Context, req *pb.PushRoomReq) error {
 // SendMessage 消息发送至群组
 // @ms:
 func (s *service) SendRoomMessage(ctx context.Context, fromDeviceID, fromUserID int64, req *pb.SendMessageReq) error {
+	roomId := req.ReceiverId
+	seq, err := repo.SeqRepo.GetNextSeq(roomId)
+	if err != nil {
+		return err
+	}
+
+	bytes := req.Content
+	msg := &pb.Message{
+		Code:     int32(pb.PushCode_PC_GROUP_MESSAGE),
+		Content:  bytes,
+		SendTime: util.UnixMilliTime(time.Now()), //req.SendTime,
+
+		Seq: seq,
+
+		SenderId:         fromUserID,     //来自于用户id
+		TargetId:         req.ReceiverId, //目标用户id
+		ConversationType: pb.ChatType_CHAT_ROOM,
+	}
+
+	//if req.IsPersist {
+	err = s.AddMessage(roomId, msg)
+	if err != nil {
+		logger.Logger.Info("AddMessage err", zap.Error(err))
+		return err
+	}
+	//}
+	//
+	//pushRoomMsg := pb.PushRoomMsg{
+	//	RoomId:  req.RoomId,
+	//	Message: msg,
+	//}
+	//bytes, err := proto.Marshal(&pushRoomMsg)
+	//if err != nil {
+	//	return gerrors.WrapError(err)
+	//}
+	//var topicName = mq.PushRoomTopic
+	//if req.IsPriority {
+	//	topicName = mq.PushRoomPriorityTopic
+	//}
 
 	//sender, err := rpc.GetSender(fromDeviceID, fromUserID)
 	//if err != nil {
@@ -75,17 +115,7 @@ func (s *service) SendRoomMessage(ctx context.Context, fromDeviceID, fromUserID 
 	//if err != nil {
 	//	return err
 	//}
-	bytes := req.Content
-	msg := &pb.Message{
-		Code:     int32(pb.PushCode_PC_GROUP_MESSAGE),
-		Content:  bytes,
-		SendTime: req.SendTime,
 
-		SenderId:         fromUserID,     //来自于用户id
-		TargetId:         req.ReceiverId, //目标用户id
-		ConversationType: pb.ChatType_CHAT_ROOM,
-	}
-	roomId := req.ReceiverId
 	proxy.RoomDeliveMessageProxy.PushRoomMsg(roomId, msg)
 	return nil
 }
