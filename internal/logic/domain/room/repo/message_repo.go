@@ -33,7 +33,7 @@ func (*messageRepo) Add(roomId int64, msg *pb.Message) error {
 		Member: buf,
 	}).Result()
 
-	db.RedisCli.Expire(key, MessageExpireTime)
+	//@ms:db.RedisCli.Expire(key, MessageExpireTime)
 	if err != nil {
 		return gerrors.WrapError(err)
 	}
