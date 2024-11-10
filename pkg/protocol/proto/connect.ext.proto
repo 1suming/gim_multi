@@ -101,7 +101,7 @@ message GetUserConversationsResp {
 
 // 消息同步请求,package_type:2
 message GetUserMessagesReq {
-  int32 conversation_type=1;
+  ChatType conversation_type=1;
   int64 owner_uid=2;
   int64 target_id=3;
   int64 seq = 4; // 客户端已经同步的序列号
