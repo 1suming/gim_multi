@@ -4,7 +4,6 @@ import (
 	ctx "context"
 	"gim/internal/logic/domain/friend"
 	"gim/internal/logic/domain/message"
-	"gim/internal/logic/domain/room"
 	"gim/pkg/dto"
 	"gim/pkg/logger"
 	"gim/pkg/protocol/pb"
@@ -123,27 +122,4 @@ func Handle_GetUserMessages(c *Conn, input *pb.Input) {
 		message = &pb.GetUserMessagesResp{Messages: resp.Messages, HasMore: resp.HasMore}
 	}
 	c.Send(pb.PackageType_PT_GET_USER_MESSAGES, input.RequestId, message, err)
-}
-
-// 获取chatroom消息，类似 SubscribeRoom
-func Handle_GetChatRoomMessages(c *Conn, input *pb.Input) {
-	logger.Logger.Info("Handle_GetChatRoomMessages")
-	var req pb.GetUserMessagesReq
-	err := proto.Unmarshal(input.Data, &req)
-	if err != nil {
-		logger.Sugar.Error(err)
-		return
-	}
-
-	//roomId := req.TargetId
-	//
-
-	resp, err := room.App.GetMessages(context.TODO(), req.OwnerUid, req.Seq, req.TargetId, req.Count)
-
-	var message proto.Message
-	if err == nil {
-		message = &pb.GetUserMessagesResp{Messages: resp.Messages, HasMore: resp.HasMore}
-	}
-	c.Send(pb.PackageType_PT_GET_USER_MESSAGES, input.RequestId, message, err)
-
 }

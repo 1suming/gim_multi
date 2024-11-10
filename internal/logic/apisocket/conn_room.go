@@ -85,3 +85,26 @@ func Handle_GetRoomList(c *Conn, input *pb.Input) error {
 	c.Send(pb.PackageType_PT_ROOM_GET_ROOM_LIST, input.RequestId, resp, err)
 	return nil
 }
+
+// 获取chatroom消息，类似 SubscribeRoom
+func Handle_GetChatRoomMessages(c *Conn, input *pb.Input) {
+	logger.Logger.Info("Handle_GetChatRoomMessages")
+	var req pb.GetUserMessagesReq
+	err := proto.Unmarshal(input.Data, &req)
+	if err != nil {
+		logger.Sugar.Error(err)
+		return
+	}
+
+	//roomId := req.TargetId
+	//
+
+	resp, err := room.App.GetMessages(context.TODO(), req.OwnerUid, req.Seq, req.TargetId, req.Count)
+
+	var message proto.Message
+	if err == nil {
+		message = &pb.GetUserMessagesResp{Messages: resp.Messages, HasMore: resp.HasMore}
+	}
+	c.Send(pb.PackageType_PT_GET_USER_MESSAGES, input.RequestId, message, err)
+
+}

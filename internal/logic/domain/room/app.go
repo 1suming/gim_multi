@@ -3,7 +3,9 @@ package room
 import (
 	"context"
 	"gim/internal/logic/domain/room/repo"
+	"gim/pkg/logger"
 	"gim/pkg/protocol/pb"
+	"go.uber.org/zap"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -47,6 +49,7 @@ func (*app) GetChatRoomList(ctx context.Context, userId int64) ([]*pb.ChatRoom, 
 参考 ：func (*messageService) GetUserMessages(ctx context.Context, userId, seq int64, targetId int64, count int64) (*pb.GetUserMessagesResp, error) {
 */
 func (*app) GetMessages(ctx context.Context, userId, seq int64, roomId int64, count int64) (*pb.GetUserMessagesResp, error) {
+	logger.Logger.Info("room GetMessages", zap.Any("userId", userId), zap.Any("seq", seq), zap.Any("targetId", roomId), zap.Any("count", count))
 
 	pbMessages, err := repo.MessageRepo.List(roomId, seq)
 
@@ -67,6 +70,7 @@ func (*app) GetMessages(ctx context.Context, userId, seq int64, roomId int64, co
 			return nil, err
 		}
 	}
+	logger.Logger.Info("room GetMessages result len:", zap.Any("len", length))
 
 	return resp, nil
 }
