@@ -92,15 +92,25 @@ message PushRoomReq{
   bool is_priority = 6; // 是否优先推送
 }
 
+
+enum FriendReqStatus {
+  FRIEND_REQ_STATUS_SEND=0;
+  FRIEND_REQ_STATUS_AGREE=1;
+  FRIEND_REQ_STATUS_REFUSE=2;
+}
+
+
 message AddFriendReq {
   int64 friend_id = 1; // 用户id
   string remarks = 2; // 备注
   string description = 3; // 描述
+
 }
 
 message AgreeAddFriendReq {
   int64 user_id = 1; // 用户id
   string remarks = 2; // 备注
+  FriendReqStatus status=3;//同意或拒绝
 }
 
 message SetFriendReq {
@@ -211,4 +221,24 @@ message GroupMember {
   MemberType member_type = 6; // 成员类型
   string remarks = 7; // 备注
   string extra = 8; // 群组成员附加字段
+}
+
+
+//好友请求列表
+message FriendReq {
+
+  int64 friend_id = 1; // 用户id
+  string remarks = 2; // 备注
+  string description = 3; // 描述
+  int64 user_id =4;
+
+}
+
+message GetFriendRequestsReq {
+
+}
+// 消息同步响应,package_type:2
+message GetFriendRequestsResp {
+  repeated FriendReq requests = 1; // 消息列表
+  bool has_more = 2; // 是否有更多数据
 }

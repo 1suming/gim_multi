@@ -172,7 +172,8 @@ func (c *Conn) HandleMessage(bytes []byte) {
 		Handle_AgreeAddFriend(c, input)
 	case pb.PackageType_PT_FRIEND_GET_FRIENDS:
 		Handle_GetFriends(c, input)
-	
+	case pb.PackageType_PT_FRIEND_GET_FRIEND_REQUESTS:
+		Handle_GetFriendReqs(c, input)
 	default:
 		logger.Logger.Error("handler switch other")
 	}

@@ -98,13 +98,21 @@ func (*service) AddFriend(ctx context.Context, userId, friendId int64, remarks, 
 }
 
 // AgreeAddFriend 同意添加好友
-func (*service) AgreeAddFriend(ctx context.Context, userId, friendId int64, remarks string) error {
+func (*service) AgreeAddFriend(ctx context.Context, userId, friendId int64, remarks string, status int) error {
 	friend, err := Repo.Get(friendId, userId)
 	if err != nil {
 		return err
 	}
 	if friend == nil {
 		return gerrors.ErrBadRequest
+	}
+	if status == FriendStatusRefuse { //@ms:如果是拒绝，修改状态即可
+		friend.Status = FriendStatusRefuse
+		err = Repo.Save(friend)
+		if err != nil {
+			return err
+		}
+		return nil
 	}
 	if friend.Status == FriendStatusAgree {
 		return nil
@@ -193,4 +201,49 @@ func (*service) SendToFriend(ctx context.Context, fromDeviceID, fromUserID int64
 	logger.Logger.Info("SendToFriend", zap.Any("对方------结束", fromUserID))
 
 	return seq, targetSeq, nil
+}
+
+/*
+*
+isSendFriend *  获取发送出去的好友请求
+获取收到的好友请求
+*/
+func (s *service) GetFriendReqs(ctx context.Context, userId int64, isSendFriend bool) ([]*pb.FriendReq, error) {
+	//friends, err := Repo.List(userId, FriendStatusAgree)
+	var friends []Friend
+	var err error
+
+	friends, err = Repo.GetFriendReqs(userId, FriendStatusApply, isSendFriend)
+
+	if err != nil {
+		return nil, err
+	}
+
+	userIds := make(map[int64]int32, len(friends))
+	for i := range friends {
+		userIds[friends[i].FriendId] = 0
+	}
+	//resp, err := rpc.GetBusinessIntClient().GetUsers(ctx, &pb.GetUsersReq{UserIds: userIds})
+	//if err != nil {
+	//	return nil, err
+	//}
+
+	var infos = make([]*pb.FriendReq, len(friends))
+	for i := range friends {
+		friendReq := pb.FriendReq{
+			UserId:  friends[i].FriendId,
+			Remarks: friends[i].Remarks,
+		}
+
+		//user, ok := resp.Users[friends[i].FriendId]
+		//if ok {
+		//	friend.Nickname = user.Nickname
+		//	friend.Sex = user.Sex
+		//	friend.AvatarUrl = user.AvatarUrl
+		//	friend.UserExtra = user.Extra
+		//}
+		infos[i] = &friendReq
+	}
+
+	return infos, nil
 }

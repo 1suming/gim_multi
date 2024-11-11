@@ -62,9 +62,29 @@ func Handle_AgreeAddFriend(c *Conn, input *pb.Input) error {
 
 	userId := c.UserId
 	resp := new(emptypb.Empty)
-	err = friend.App.AgreeAddFriend(ctx.TODO(), userId, req.UserId, req.Remarks)
+	err = friend.App.HandleAddFriendRequest(ctx.TODO(), userId, req.UserId, req.Remarks, req.Status)
 
 	c.Send(pb.PackageType_PT_FRIEND_AGREE_ADD_FRIEND, input.RequestId, resp, err)
+	return nil
+
+}
+
+func Handle_GetFriendReqs(c *Conn, input *pb.Input) error {
+	var req pb.GetFriendRequestsReq
+	err := proto.Unmarshal(input.Data, &req)
+	if err != nil {
+		logger.Logger.Error("Handle_GetFriendReqs", zap.Error(err))
+		c.Send(pb.PackageType_PT_FRIEND_GET_FRIEND_REQUESTS, input.RequestId, nil, err)
+		return err
+	}
+	logger.Logger.Info(" Handle_GetFriendReqs", zap.Any("req", nil))
+
+	userId := c.UserId
+	isSendFriend := true
+	friendReqs, err := friend.App.GetFriendReqs(ctx.TODO(), userId, isSendFriend)
+	resp := &pb.GetFriendRequestsResp{Requests: friendReqs}
+
+	c.Send(pb.PackageType_PT_FRIEND_GET_FRIEND_REQUESTS, input.RequestId, resp, err)
 	return nil
 
 }

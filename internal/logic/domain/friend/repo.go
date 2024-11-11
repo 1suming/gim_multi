@@ -36,3 +36,13 @@ func (*repo) List(userId int64, status int) ([]Friend, error) {
 	err := db.DB.Where("user_id = ? and status = ?", userId, status).Find(&friends).Error
 	return friends, gerrors.WrapError(err)
 }
+func (*repo) GetFriendReqs(friend_id int64, status int, isSendFriend bool) ([]Friend, error) {
+	var friends []Friend
+	var err error
+	if isSendFriend == true {
+		err = db.DB.Where("user_id = ? and status = ?", friend_id, status).Find(&friends).Error
+	} else {
+		err = db.DB.Where("friend_id = ? and status = ?", friend_id, status).Find(&friends).Error
+	}
+	return friends, gerrors.WrapError(err)
+}

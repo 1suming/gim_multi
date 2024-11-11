@@ -15,6 +15,10 @@ func (s *app) List(ctx context.Context, userId int64) ([]*pb.Friend, error) {
 	return Service.List(ctx, userId)
 }
 
+func (s *app) GetFriendReqs(ctx context.Context, userId int64, isSendFriend bool) ([]*pb.FriendReq, error) {
+	return Service.GetFriendReqs(ctx, userId, isSendFriend)
+}
+
 // AddFriend 添加好友
 func (*app) AddFriend(ctx context.Context, userId, friendId int64, remarks, description string) error {
 	return Service.AddFriend(ctx, userId, friendId, remarks, description)
@@ -22,7 +26,16 @@ func (*app) AddFriend(ctx context.Context, userId, friendId int64, remarks, desc
 
 // AgreeAddFriend 同意添加好友
 func (*app) AgreeAddFriend(ctx context.Context, userId, friendId int64, remarks string) error {
-	return Service.AgreeAddFriend(ctx, userId, friendId, remarks)
+	return Service.AgreeAddFriend(ctx, userId, friendId, remarks, FriendStatusAgree)
+}
+
+// @ms:
+func (*app) HandleAddFriendRequest(ctx context.Context, userId, friendId int64, remarks string, status pb.FriendReqStatus) error {
+	if status == pb.FriendReqStatus_FRIEND_REQ_STATUS_AGREE {
+		return Service.AgreeAddFriend(ctx, userId, friendId, remarks, FriendStatusAgree)
+	} else {
+		return Service.AgreeAddFriend(ctx, userId, friendId, remarks, FriendStatusRefuse)
+	}
 }
 
 // SetFriend 设置好友信息

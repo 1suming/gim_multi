@@ -3,8 +3,9 @@ package friend
 import "time"
 
 const (
-	FriendStatusApply = 0 // 申请
-	FriendStatusAgree = 1 // 同意
+	FriendStatusApply  = 0 // 申请
+	FriendStatusAgree  = 1 // 同意
+	FriendStatusRefuse = 2 //拒绝
 )
 
 type Friend struct {
