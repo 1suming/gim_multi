@@ -50,6 +50,43 @@ func Handle_AddFriend(c *Conn, input *pb.Input) error {
 	return nil
 
 }
+func Handle_AgreeAddFriend(c *Conn, input *pb.Input) error {
+	var req pb.AgreeAddFriendReq
+	err := proto.Unmarshal(input.Data, &req)
+	if err != nil {
+		logger.Logger.Error("Handle_AgreeAddFriend", zap.Error(err))
+		c.Send(pb.PackageType_PT_FRIEND_ADD_FRIEND, input.RequestId, nil, err)
+		return err
+	}
+	logger.Logger.Info(" Handle_AgreeAddFriend", zap.Any("req", req))
+
+	userId := c.UserId
+	resp := new(emptypb.Empty)
+	err = friend.App.AgreeAddFriend(ctx.TODO(), userId, req.UserId, req.Remarks)
+
+	c.Send(pb.PackageType_PT_FRIEND_ADD_FRIEND, input.RequestId, resp, err)
+	return nil
+
+}
+
+func Handle_GetFriends(c *Conn, input *pb.Input) error {
+	//var req pb.AgreeAddFriendReq
+	//err := proto.Unmarshal(input.Data, &req)
+	//if err != nil {
+	//	logger.Logger.Error("Handle_AgreeAddFriend", zap.Error(err))
+	//	c.Send(pb.PackageType_PT_FRIEND_ADD_FRIEND, input.RequestId, nil, err)
+	//	return err
+	//}
+	logger.Logger.Info(" Handle_GetFriends", zap.Any("req", nil))
+
+	userId := c.UserId
+	friends, err := friend.App.List(ctx.TODO(), userId)
+	resp := &pb.GetFriendsResp{Friends: friends}
+
+	c.Send(pb.PackageType_PT_FRIEND_ADD_FRIEND, input.RequestId, resp, err)
+	return nil
+
+}
 
 // SendMessageToFriend 发送好友消息
 func Handle_SendMessageToFriend(c *Conn, input *pb.Input) error {

@@ -145,10 +145,6 @@ func (c *Conn) HandleMessage(bytes []byte) {
 	case pb.PackageType_PT_UPDATE_USER:
 		Handle_UpdateUser(c, input)
 
-	case pb.PackageType_PT_FRIEND_ADD_FRIEND:
-
-		Handle_AddFriend(c, input)
-
 	case pb.PackageType_PT_SEND_MESSAGE:
 		Handle_SendMessage(c, input)
 
@@ -169,6 +165,14 @@ func (c *Conn) HandleMessage(bytes []byte) {
 	case pb.PackageType_PT_ROOM_JOIN_ROOM: // pb.PackageType_PT_SUBSCRIBE_ROOM:
 		Handle_SubscribedRoom(c, input)
 
+	//friend
+	case pb.PackageType_PT_FRIEND_ADD_FRIEND:
+		Handle_AddFriend(c, input)
+	case pb.PackageType_PT_FRIEND_AGREE_ADD_FRIEND:
+		Handle_AgreeAddFriend(c, input)
+	case pb.PackageType_PT_FRIEND_GET_FRIENDS:
+		Handle_GetFriends(c, input)
+	
 	default:
 		logger.Logger.Error("handler switch other")
 	}
