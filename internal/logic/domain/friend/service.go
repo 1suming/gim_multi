@@ -230,9 +230,12 @@ func (s *service) GetFriendReqs(ctx context.Context, userId int64, isSendFriend 
 
 	var infos = make([]*pb.FriendReq, len(friends))
 	for i := range friends {
+
+		createTime_unixMilli := friends[i].CreateTime.UnixMilli()
 		friendReq := pb.FriendReq{
 
-			Remarks: friends[i].Remarks,
+			Remarks:    friends[i].Remarks,
+			CreateTime: createTime_unixMilli,
 		}
 		if isSendFriend == true {
 			friendReq.FriendId = friends[i].FriendId
