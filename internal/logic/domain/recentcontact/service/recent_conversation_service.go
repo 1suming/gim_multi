@@ -5,6 +5,7 @@ import (
 	"errors"
 	"gim/internal/logic/domain/recentcontact/model"
 	"gim/internal/logic/domain/recentcontact/repo"
+	"gim/pkg/commondefine"
 	"gim/pkg/db"
 	"gim/pkg/dto"
 	"gim/pkg/gerrors"
@@ -19,11 +20,6 @@ type SRecentConversationService struct{}
 
 var RecentConversationService = new(SRecentConversationService)
 
-const (
-	REDIS_KEY_CONVERSAION_UNREAD_TOTAL_CNT = "conversation_unread_T" //总未读
-	REDIS_KEY_CONVERSAION_UNREAD_CNT       = "conversation_unread_C" //会话未读
-)
-
 func (r *SRecentConversationService) SaveOrUpdate(ctx context.Context, dataDto *dto.SaveOrUpdateRecentContactDTO) error {
 
 	err := r._saveOrUpdateSingle(ctx, dataDto, dataDto.OwnerUid, dataDto.TargetId, dataDto.LastMessageId)
@@ -37,13 +33,13 @@ func (r *SRecentConversationService) SaveOrUpdate(ctx context.Context, dataDto *
 	sourceId := dataDto.TargetId //收件人
 	targetId := dataDto.OwnerUid
 
-	err = db.RedisUtil.GetRedisClient().HIncrBy(REDIS_KEY_CONVERSAION_UNREAD_CNT+"_"+strconv.FormatInt(sourceId, 10), strconv.FormatInt(targetId, 10), 1).Err()
+	err = db.RedisUtil.GetRedisClient().HIncrBy(commondefine.REDIS_KEY_CONVERSAION_UNREAD_CNT+"_"+strconv.FormatInt(sourceId, 10), strconv.FormatInt(targetId, 10), 1).Err()
 	if err != nil {
 		logger.Logger.Error("redis error", zap.Error(err))
 		return err
 	}
 
-	err = db.RedisUtil.GetRedisClient().Incr(REDIS_KEY_CONVERSAION_UNREAD_TOTAL_CNT + "_" + strconv.FormatInt(sourceId, 10)).Err()
+	err = db.RedisUtil.GetRedisClient().Incr(commondefine.REDIS_KEY_CONVERSAION_UNREAD_TOTAL_CNT + "_" + strconv.FormatInt(sourceId, 10)).Err()
 	if err != nil {
 		logger.Logger.Error("redis error", zap.Error(err))
 		return err
@@ -103,7 +99,7 @@ func (r *SRecentConversationService) GetUserRecentConversations(ctx context.Cont
 
 	var totalUnread int64
 	totalUnread = 0
-	err := db.RedisUtil.Get(REDIS_KEY_CONVERSAION_UNREAD_TOTAL_CNT+"_"+strconv.FormatInt(userId, 10), &totalUnread)
+	err := db.RedisUtil.Get(commondefine.REDIS_KEY_CONVERSAION_UNREAD_TOTAL_CNT+"_"+strconv.FormatInt(userId, 10), &totalUnread)
 	if err != nil && !errors.Is(err, redis.Nil) {
 		return gerrors.WrapError(err)
 	}
@@ -119,7 +115,7 @@ func (r *SRecentConversationService) GetUserRecentConversations(ctx context.Cont
 		copier.Copy(&conversationSingle, &record)
 
 		targetId := record.TargetId
-		val, err := db.RedisUtil.GetRedisClient().HGet(REDIS_KEY_CONVERSAION_UNREAD_CNT+"_"+strconv.FormatInt(userId, 10), strconv.FormatInt(targetId, 10)).Result()
+		val, err := db.RedisUtil.GetRedisClient().HGet(commondefine.REDIS_KEY_CONVERSAION_UNREAD_CNT+"_"+strconv.FormatInt(userId, 10), strconv.FormatInt(targetId, 10)).Result()
 		if err != nil {
 			// 如果返回的错误是key不存在
 			if errors.Is(err, redis.Nil) {

@@ -2,17 +2,23 @@ package service
 
 import (
 	"context"
+	"errors"
 	"gim/internal/logic/domain/message/model"
 	"gim/internal/logic/domain/message/repo"
 	"gim/internal/logic/proxy"
+	"gim/pkg/commondefine"
+	"gim/pkg/db"
+	"gim/pkg/gerrors"
 	"gim/pkg/grpclib"
 	"gim/pkg/grpclib/picker"
 	"gim/pkg/logger"
 	"gim/pkg/protocol/pb"
 	"gim/pkg/rpc"
 	"gim/pkg/util"
+	"github.com/go-redis/redis"
 	"go.uber.org/zap"
 	"google.golang.org/protobuf/proto"
+	"strconv"
 )
 
 const MessageLimit = 50 // 最大消息同步数量
@@ -53,11 +59,14 @@ func (*messageService) Sync(ctx context.Context, userId, seq int64) (*pb.SyncRes
 }
 
 // Sync 消息同步
-func (*messageService) GetUserMessages(ctx context.Context, userId, seq int64, targetId int64, count int64) (*pb.GetUserMessagesResp, error) {
-	messages, hasMore, err := MessageService.ListByUserIdAndSeqAndTargetId(ctx, userId, seq, targetId, count)
+func (m *messageService) GetUserMessages(ctx context.Context, userId, seq int64, targetId int64, count int64) (*pb.GetUserMessagesResp, error) {
+	messages, hasMore, err := m.ListByUserIdAndSeqAndTargetId(ctx, userId, seq, targetId, count)
 	if err != nil {
 		return nil, err
 	}
+
+	m.deleteUnreadCnt(ctx, userId, targetId) //
+
 	pbMessages := model.MessagesToPB(messages)
 	length := len(pbMessages)
 
@@ -78,6 +87,55 @@ func (*messageService) GetUserMessages(ctx context.Context, userId, seq int64, t
 	}
 
 	return resp, nil
+}
+
+/*
+*
+删除未读数
+*/
+func (m *messageService) deleteUnreadCnt(ctx context.Context, sourceId, targetId int64) error {
+	logger.Logger.Info("deleteUnreadCnt", zap.Int64("source_id", sourceId), zap.Int64("target_id", targetId))
+	//删除该回话未读数
+	var unreadCnt int64
+	val, err := db.RedisUtil.GetRedisClient().HGet(commondefine.REDIS_KEY_CONVERSAION_UNREAD_CNT+"_"+strconv.FormatInt(sourceId, 10), strconv.FormatInt(targetId, 10)).Result()
+	if err != nil {
+		// 如果返回的错误是key不存在
+		if errors.Is(err, redis.Nil) {
+			logger.Logger.Info("redis is nil", zap.Error(err))
+			unreadCnt = 0
+		} else {
+			return gerrors.WrapError(err)
+		}
+	} else {
+		unread, err := strconv.Atoi(val)
+		if err != nil {
+			logger.Logger.Error("redis error", zap.Error(err))
+			return err
+		}
+		unreadCnt = int64(unread)
+	}
+
+	err = db.RedisUtil.GetRedisClient().HDel(commondefine.REDIS_KEY_CONVERSAION_UNREAD_CNT+"_"+strconv.FormatInt(sourceId, 10), strconv.FormatInt(targetId, 10)).Err()
+	if err != nil && !errors.Is(err, redis.Nil) {
+		logger.Logger.Error("redis error", zap.Error(err))
+		return err
+	}
+	//long afterCleanUnread = redisTemplate.opsForValue().increment(ownerUid + Constants.TOTAL_UNREAD_SUFFIX, -convUnread);
+	///** 修正总未读 */
+	//if (afterCleanUnread <= 0) {
+	//	redisTemplate.delete(ownerUid + Constants.TOTAL_UNREAD_SUFFIX);
+	//}
+	totalUnreadKey := commondefine.REDIS_KEY_CONVERSAION_UNREAD_TOTAL_CNT + "_" + strconv.FormatInt(sourceId, 10)
+	afterCleanUnreadVal, err := db.RedisUtil.GetRedisClient().IncrBy(totalUnreadKey, 0-unreadCnt).Result()
+	if err != nil && !errors.Is(err, redis.Nil) {
+		logger.Logger.Error("redis error", zap.Error(err))
+		return err
+	}
+	if afterCleanUnreadVal <= 0 {
+		db.RedisUtil.GetRedisClient().Del(totalUnreadKey)
+	}
+	return nil
+
 }
 
 // ListByUserIdAndSeq 查询消息
