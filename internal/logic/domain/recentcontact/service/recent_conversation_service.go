@@ -96,7 +96,7 @@ func (r *SRecentConversationService) _saveOrUpdateSingle(ctx context.Context, da
 
 func (r *SRecentConversationService) GetUserRecentConversations(ctx context.Context, userId int64, userRecentConverationAll *dto.UserRecentConversationAll) error {
 	//var userRecentConverationAll dto.UserRecentConversationAll
-
+	logger.Logger.Info("GetUserRecentConversations func start")
 	var totalUnread int64
 	totalUnread = 0
 	err := db.RedisUtil.Get(commondefine.REDIS_KEY_CONVERSAION_UNREAD_TOTAL_CNT+"_"+strconv.FormatInt(userId, 10), &totalUnread)
