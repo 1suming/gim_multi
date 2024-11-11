@@ -130,6 +130,7 @@ func (r *SRecentConversationService) GetUserRecentConversations(ctx context.Cont
 				logger.Logger.Error("redis error", zap.Error(err))
 				return err
 			}
+			logger.Logger.Info("REDIS_KEY_CONVERSAION_UNREAD_CNT", zap.Any("userId:", userId), zap.Any("targetId", targetId), zap.Any("unread", unread))
 			conversationSingle.UnreadCnt = int64(unread)
 		}
 
