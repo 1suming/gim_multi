@@ -21,7 +21,7 @@ type SRecentConversationService struct{}
 var RecentConversationService = new(SRecentConversationService)
 
 func (r *SRecentConversationService) SaveOrUpdate(ctx context.Context, dataDto *dto.SaveOrUpdateRecentContactDTO) error {
-
+	logger.Logger.Info("SRecentConversationService func start")
 	err := r._saveOrUpdateSingle(ctx, dataDto, dataDto.OwnerUid, dataDto.TargetId, dataDto.LastMessageId)
 	if err != nil {
 		return err
@@ -33,13 +33,15 @@ func (r *SRecentConversationService) SaveOrUpdate(ctx context.Context, dataDto *
 	sourceId := dataDto.TargetId //收件人
 	targetId := dataDto.OwnerUid
 
+	logger.Logger.Info("update REDIS_KEY_CONVERSAION_UNREAD_CNT", zap.Any("userId:", sourceId), zap.Any("targetId", targetId))
+
 	err = db.RedisUtil.GetRedisClient().HIncrBy(commondefine.REDIS_KEY_CONVERSAION_UNREAD_CNT+"_"+strconv.FormatInt(sourceId, 10), strconv.FormatInt(targetId, 10), 1).Err()
 	if err != nil {
 		logger.Logger.Error("redis error", zap.Error(err))
 		return err
 	}
-
-	err = db.RedisUtil.GetRedisClient().Incr(commondefine.REDIS_KEY_CONVERSAION_UNREAD_TOTAL_CNT + "_" + strconv.FormatInt(sourceId, 10)).Err()
+	totalUnreadKey := commondefine.REDIS_KEY_CONVERSAION_UNREAD_TOTAL_CNT + "_" + strconv.FormatInt(sourceId, 10)
+	err = db.RedisUtil.GetRedisClient().Incr(totalUnreadKey).Err()
 	if err != nil {
 		logger.Logger.Error("redis error", zap.Error(err))
 		return err
