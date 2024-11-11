@@ -72,7 +72,8 @@ func (c *Conn) Close() error {
 
 	//// 取消订阅，需要异步出去，防止重复加锁造成死锁
 	go func() {
-		UnSubscribedRoom(c)
+		isSendMsg := true
+		UnSubscribedRoom(c, isSendMsg)
 	}()
 
 	if c.DeviceId != 0 {

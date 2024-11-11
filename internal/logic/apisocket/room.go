@@ -2,8 +2,15 @@ package apisocket
 
 import (
 	"container/list"
+	"context"
+	"gim/internal/logic/domain/room"
+	userRepo "gim/internal/logic/domain/user/repo"
+	"gim/pkg/logger"
 	"gim/pkg/protocol/pb"
+	"gim/pkg/util"
+	"go.uber.org/zap"
 	"sync"
+	"time"
 )
 
 var RoomsManager sync.Map
@@ -13,9 +20,10 @@ type SRoomApp struct{}
 var RoomApp = new(SRoomApp)
 
 // SubscribedRoom 订阅房间
-func SubscribedRoom(conn *Conn, roomId int64) {
+func SubscribedRoom(conn *Conn, roomId int64, isSendMessage bool) error {
+	logger.Logger.Info("SubscribedRoom", zap.Any("userid", conn.UserId), zap.Any("deviceID", conn.DeviceId))
 	if roomId == conn.RoomId {
-		return
+		return nil
 	}
 
 	oldRoomId := conn.RoomId
@@ -23,7 +31,7 @@ func SubscribedRoom(conn *Conn, roomId int64) {
 	if oldRoomId != 0 {
 		value, ok := RoomsManager.Load(oldRoomId)
 		if !ok {
-			return
+			return nil
 		}
 		room := value.(*Room)
 		room.Unsubscribe(conn)
@@ -45,17 +53,46 @@ func SubscribedRoom(conn *Conn, roomId int64) {
 			room = value.(*Room)
 		}
 		room.Subscribe(conn)
-		return
-	}
-}
-func UnSubscribedRoom(conn *Conn) {
 
+	}
+
+	if isSendMessage {
+
+		//发送进房消息
+		deviceId, userId := conn.DeviceId, conn.UserId
+
+		userInfo, err := userRepo.UserRepo.Get(userId)
+		if err != nil {
+			logger.Logger.Error("Get err", zap.Error(err))
+
+			return err
+		}
+		joinRoomContent := "欢迎" + " " + userInfo.Nickname + " 加入聊天室"
+		sendMessageReq := pb.SendMessageReq{
+			ChatType:   pb.ChatType_CHAT_ROOM,
+			ReceiverId: roomId,
+
+			Content: []byte(joinRoomContent),
+
+			SendTime:       util.UnixMilliTime(time.Now()),
+			MsgContentType: pb.MessageContentType_MCT_NOTIFICATION, //发送通知类消息
+		}
+		userId = 0 //0代表系统
+		room.App.SendRoomMessage(context.TODO(), deviceId, userId, &sendMessageReq)
+	}
+	return nil
+}
+func UnSubscribedRoom(conn *Conn, isSendMessage bool) error {
+	logger.Logger.Info("UnSubscribedRoom", zap.Any("userid", conn.UserId), zap.Any("deviceID", conn.DeviceId))
 	oldRoomId := conn.RoomId
+	if oldRoomId == 0 {
+		return nil
+	}
 	// 取消订阅
 	if oldRoomId != 0 {
 		value, ok := RoomsManager.Load(oldRoomId)
 		if !ok {
-			return
+			return nil
 		}
 		room := value.(*Room)
 		room.Unsubscribe(conn)
@@ -65,6 +102,30 @@ func UnSubscribedRoom(conn *Conn) {
 		}
 		//@ms:这里必须要return return
 	}
+
+	//发送进房消息
+	deviceId, userId := conn.DeviceId, conn.UserId
+
+	userInfo, err := userRepo.UserRepo.Get(userId)
+	if err != nil {
+		logger.Logger.Error("Get err", zap.Error(err))
+		//conn.Send(pb.PackageType_PT_ROOM_QUITROOM, nil, nil, err)
+		return nil
+	}
+	joinRoomContent := userInfo.Nickname + " 离开聊天室"
+	sendMessageReq := pb.SendMessageReq{
+		ChatType:   pb.ChatType_CHAT_ROOM,
+		ReceiverId: oldRoomId,
+
+		Content: []byte(joinRoomContent),
+
+		SendTime:       util.UnixMilliTime(time.Now()),
+		MsgContentType: pb.MessageContentType_MCT_NOTIFICATION, //发送通知类消息
+	}
+	userId = 0 //0代表系统
+	room.App.SendRoomMessage(context.TODO(), deviceId, userId, &sendMessageReq)
+
+	return nil
 }
 
 // PushRoom 房间消息推送
