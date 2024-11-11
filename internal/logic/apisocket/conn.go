@@ -319,6 +319,8 @@ func Handle_MessageACK(c *Conn, input *pb.Input) {
 	if err != nil {
 		logger.Logger.Info("handle", zap.Any("err", err))
 	}
+
+	c.Send(pb.PackageType_PT_MESSAGE_ACK, input.RequestId, nil, err)
 	return
 
 }
