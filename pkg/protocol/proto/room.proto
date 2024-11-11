@@ -41,3 +41,12 @@ message GetRoomListReq {
 message GetRoomListResp {
   repeated ChatRoom rooms = 1; // 消息列表
 }
+
+
+//
+message QuitRoomReq {
+  int64 room_id = 1; // 房间ID，如果为0，取消房间订阅
+}
+message QuitRoomResp{
+
+}

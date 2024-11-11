@@ -35,6 +35,7 @@ enum PackageType {
   PT_ROOM_CREATE_ROOM =40002;//创建room
   PT_ROOM_DELETE_ROOM =40003;//解散room
   PT_ROOM_JOIN_ROOM = 40004;//加入room
+  PT_ROOM_QUITROOM = 40005;//退出room
 
 }
 enum ChatType {

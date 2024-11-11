@@ -164,6 +164,8 @@ func (c *Conn) HandleMessage(bytes []byte) {
 
 	case pb.PackageType_PT_ROOM_JOIN_ROOM: // pb.PackageType_PT_SUBSCRIBE_ROOM:
 		Handle_SubscribedRoom(c, input)
+	case pb.PackageType_PT_ROOM_QUITROOM: // pb.PackageType_PT_SUBSCRIBE_ROOM:
+		Handle_QuitRoom(c, input)
 
 	//friend
 	case pb.PackageType_PT_FRIEND_ADD_FRIEND:

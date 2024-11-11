@@ -13,3 +13,6 @@ protoc --go_out=../pb --go-grpc_out=../pb  ./*.proto
 [root@localhost logic]#
 
 golang stack是从上到下看
+
+cp -r gim/pkg/protocol/pb/* .
+rm -rf gim
