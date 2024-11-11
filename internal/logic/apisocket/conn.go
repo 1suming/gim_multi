@@ -65,6 +65,7 @@ func (c *Conn) WriteToWS(bytes []byte) error {
 
 // Close 关闭
 func (c *Conn) Close() error {
+	logger.Logger.Info("Socket close:", zap.Any("userid", c.UserId), zap.Any("deviceID", c.DeviceId))
 	// 取消设备和连接的对应关系
 	if c.DeviceId != 0 {
 		DeleteConn(c.DeviceId)
