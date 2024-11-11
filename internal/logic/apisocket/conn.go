@@ -305,6 +305,7 @@ func Handle_MessageACK(c *Conn, input *pb.Input) {
 		logger.Sugar.Error(err)
 		return
 	}
+	//只有单聊才能ack，chatroom不能，
 
 	//_, _ = rpc.GetLogicIntClient().MessageACK(grpclib.ContextWithRequestId(context.TODO(), input.RequestId), &pb.MessageACKReq{
 	//	UserId:      c.UserId,
