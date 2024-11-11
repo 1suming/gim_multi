@@ -182,6 +182,7 @@ func (*service) SendToFriend(ctx context.Context, fromDeviceID, fromUserID int64
 		SenderId:         fromUserID,     //来自于用户id
 		TargetId:         req.ReceiverId, //目标用户id
 		ConversationType: pb.ChatType_SINGLE_CHAT,
+		MsgContentType:   pb.MessageContentType_MCT_TEXT,
 	}
 	logger.Logger.Info("SendToFriend", zap.Any("自身------开始", fromUserID))
 

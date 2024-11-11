@@ -21,6 +21,10 @@ alter table message add  column sender_id bigint  NOT NULL default 0 comment '�
 
 alter table message add  column str_content varchar(1024)   NOT NULL default ''  AFTER content;
 
+//内容类型
+alter table message add  column content_type tinyint   NOT NULL default '0'  AFTER content;
+
+
 CREATE TABLE `chatroom`
 (
     `id`           bigint(20) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增主键',
