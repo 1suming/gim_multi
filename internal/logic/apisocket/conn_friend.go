@@ -80,7 +80,7 @@ func Handle_GetFriendReqs(c *Conn, input *pb.Input) error {
 	logger.Logger.Info(" Handle_GetFriendReqs", zap.Any("req", nil))
 
 	userId := c.UserId
-	isSendFriend := true
+	isSendFriend := false
 	friendReqs, err := friend.App.GetFriendReqs(ctx.TODO(), userId, isSendFriend)
 	resp := &pb.GetFriendRequestsResp{Requests: friendReqs}
 
