@@ -135,20 +135,20 @@ func (*service) AgreeAddFriend(ctx context.Context, userId, friendId int64, rema
 	if err != nil {
 		return err
 	}
-
-	resp, err := rpc.GetBusinessIntClient().GetUser(ctx, &pb.GetUserReq{UserId: userId})
-	if err != nil {
-		return err
-	}
-
-	_, err = proxy.PushToUser(ctx, friendId, pb.PushCode_PC_AGREE_ADD_FRIEND, &pb.AgreeAddFriendPush{
-		FriendId:  userId,
-		Nickname:  resp.User.Nickname,
-		AvatarUrl: resp.User.AvatarUrl,
-	}, true)
-	if err != nil {
-		return err
-	}
+	//@ms:不要
+	//resp, err := rpc.GetBusinessIntClient().GetUser(ctx, &pb.GetUserReq{UserId: userId})
+	//if err != nil {
+	//	return err
+	//}
+	//
+	//_, err = proxy.PushToUser(ctx, friendId, pb.PushCode_PC_AGREE_ADD_FRIEND, &pb.AgreeAddFriendPush{
+	//	FriendId:  userId,
+	//	Nickname:  resp.User.Nickname,
+	//	AvatarUrl: resp.User.AvatarUrl,
+	//}, true)
+	//if err != nil {
+	//	return err
+	//}
 	return nil
 }
 
