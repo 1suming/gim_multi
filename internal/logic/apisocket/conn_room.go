@@ -58,7 +58,8 @@ func Handle_SubscribedRoom(c *Conn, input *pb.Input) {
 
 		Content: []byte(joinRoomContent),
 
-		SendTime: util.UnixMilliTime(time.Now()),
+		SendTime:       util.UnixMilliTime(time.Now()),
+		MsgContentType: pb.MessageContentType_MCT_NOTIFICATION, //发送通知类消息
 	}
 	userId = 0 //0代表系统
 	room.App.SendRoomMessage(context.TODO(), deviceId, userId, &sendMessageReq)

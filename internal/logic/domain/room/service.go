@@ -78,6 +78,7 @@ func (s *service) SendRoomMessage(ctx context.Context, fromDeviceID, fromUserID 
 		SenderId:         fromUserID,     //来自于用户id
 		TargetId:         req.ReceiverId, //目标用户id
 		ConversationType: pb.ChatType_CHAT_ROOM,
+		MsgContentType:   req.MsgContentType,
 	}
 
 	//if req.IsPersist {

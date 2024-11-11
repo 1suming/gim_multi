@@ -53,6 +53,12 @@ enum ChatType {
 //}
 
 
+enum MessageContentType{
+   MCT_TEXT =0;//普通文本消息
+   MCT_NOTIFICATION =1;//通知类消息
+   MCT_IMAGE =2;//图片类
+   MCT_FILE =3;
+}
 // 单条消息投递内容（估算大约100个字节）,todo 通知栏提醒
 message Message {
   int32 code = 1; // 推送码
@@ -66,6 +72,7 @@ message Message {
   int64 sender_id=7;//来自于用户id
 
   ChatType conversation_type=8;//会话类型
+  MessageContentType msg_content_type=9;
 }
 
 enum MessageStatus {
