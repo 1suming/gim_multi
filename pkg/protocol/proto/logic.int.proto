@@ -30,7 +30,7 @@ service LogicInt {
   rpc ServerStop (ServerStopReq) returns (google.protobuf.Empty);
 }
 
-message ConnSignInReq {
+message SyncConnSignInReq {
   int64 device_id = 1; // 设备id
   int64 user_id = 2; // 用户id
   string token = 3; // 秘钥
