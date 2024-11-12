@@ -3,7 +3,9 @@ package config
 import (
 	"context"
 	"gim/pkg/gerrors"
+	"gim/pkg/logger"
 	"gim/pkg/protocol/pb"
+	"go.uber.org/zap"
 	"os"
 
 	"google.golang.org/grpc"
@@ -47,6 +49,7 @@ type Configuration struct {
 
 func init() {
 	env := os.Getenv("GIM_ENV")
+	logger.Logger.Info("init env :", zap.Any("env", env))
 	builder, ok := builders[env]
 	if !ok {
 		builder = new(defaultBuilder)

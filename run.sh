@@ -19,7 +19,7 @@ echo "停止logic服务"
 nohup ./logic &
 echo "启动logic服务"
 
-cd ../connect
+cd ../connectbui
 rm -f connect
 go build -o connect main.go
 echo "打包connect成功"
