@@ -20,7 +20,7 @@ func (*defaultBuilderOnline) Build() Configuration {
 	logger.Target = logger.Console
 
 	return Configuration{
-		MySQL:                "root:ronds239ABE13189Dbpwd@tcp(127.0.0.1:3306)/im?charset=utf8&parseTime=true",
+		MySQL:                "root:@tcp(127.0.0.1:3306)/im?charset=utf8&parseTime=true",
 		RedisHost:            "127.0.0.1:6379",
 		RedisPassword:        "wanzi",
 		PushRoomSubscribeNum: 100,
