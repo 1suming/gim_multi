@@ -12,6 +12,7 @@ import (
 var builders = map[string]Builder{
 	"default": &defaultBuilder{},
 	"k8s":     &k8sBuilder{},
+	"online":  &defaultBuilderOnline{},
 }
 
 var Config Configuration
