@@ -188,6 +188,7 @@ func (r *Room) Push(message *pb.Message) {
 	element := r.Conns.Front()
 	for {
 		conn := element.Value.(*Conn)
+		logger.Logger.Debug("推送房间消息Push", zap.Any("userid:", conn.UserId), zap.Any("deviceID:", conn.DeviceId))
 		conn.Send(pb.PackageType_PT_MESSAGE, 0, message, nil)
 
 		element = element.Next()
